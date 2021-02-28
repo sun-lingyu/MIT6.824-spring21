@@ -1,5 +1,5 @@
 # MIT6.824-spring21
-main: my implementation of golang tutorial "A Tour of Go"'s final exercise
+go-tutorial branch: my implementation of golang tutorial "A Tour of Go"'s final exercise
 
 使用Mutex实现
 
