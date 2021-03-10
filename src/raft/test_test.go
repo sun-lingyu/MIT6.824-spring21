@@ -22,7 +22,7 @@ import (
 const RaftElectionTimeout = 1000 * time.Millisecond
 
 func TestInitialElection2A(t *testing.T) {
-	/*servers := 3
+	servers := 3
 	cfg := make_config(t, servers, false, false)
 	defer cfg.cleanup()
 
@@ -48,11 +48,11 @@ func TestInitialElection2A(t *testing.T) {
 	// there should still be a leader.
 	cfg.checkOneLeader()
 
-	cfg.end()*/
+	cfg.end()
 }
 
 func TestReElection2A(t *testing.T) {
-	/*servers := 3
+	servers := 3
 	cfg := make_config(t, servers, false, false)
 	defer cfg.cleanup()
 
@@ -85,7 +85,7 @@ func TestReElection2A(t *testing.T) {
 	cfg.connect(leader2)
 	cfg.checkOneLeader()
 
-	cfg.end()*/
+	cfg.end()
 }
 
 func TestManyElections2A(t *testing.T) {
@@ -108,12 +108,12 @@ func TestManyElections2A(t *testing.T) {
 		cfg.disconnect(i1)
 		cfg.disconnect(i2)
 		cfg.disconnect(i3)
-		fmt.Printf("disconnect %d %d %d-----------\n", i1, i2, i3)
+		//fmt.Printf("disconnect %d %d %d-----------\n", i1, i2, i3)
 
 		// either the current leader should still be alive,
 		// or the remaining four should elect a new one.
 		cfg.checkOneLeader()
-		fmt.Printf("trying to connect again-------\n")
+		//fmt.Printf("trying to connect again-------\n")
 
 		cfg.connect(i1)
 		cfg.connect(i2)

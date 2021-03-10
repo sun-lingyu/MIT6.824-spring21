@@ -109,13 +109,14 @@ type Raft struct {
 	//(added by me
 	state serverState //0:follower; 1:candidate; 2:leader
 	//tickerResetChannel chan bool
-	electAbortChannel  chan bool
-	applyCh            chan ApplyMsg
-	leaderAbortChannel chan bool
-	tickerAbortChannel chan bool
-	timer              *time.Timer
-	timerLock          sync.Mutex
-	tfLock             sync.Mutex //used for terminating leadership. see leader().
+	electAbortChannel      chan bool
+	applyCh                chan ApplyMsg
+	leaderAbortChannel     chan bool
+	tickerAbortChannel     chan bool
+	timer                  *time.Timer
+	timerLock              sync.Mutex
+	leaderTerminateLock    sync.Mutex //used for terminating leadership. see leader().
+	candidateTerminateLock sync.Mutex //used for terminating candidateship. see elect().
 	// Look at the paper's Figure 2 for a description of what
 	// state a Raft server must maintain.
 
@@ -227,6 +228,11 @@ type AppendEntriesReply struct {
 }
 
 func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply) {
+	//IMPORTANT
+	//RPC handler do not change state itself.
+	//It only send Abort messages to leader() or elect().
+	//changing state is done by them
+	//otherwise leader() or candidate() may be confused about their state.
 	rf.mu.Lock() //hold the lock during entire handle process
 	defer rf.mu.Unlock()
 	defer func() { reply.Term = rf.currentTerm }()
@@ -243,12 +249,11 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 		if rf.state == leader {
 			//fmt.Printf("Leader %d find Outdated passively!\n", rf.me)
-			rf.leaderAbortChannel <- true //abdicate leadership
+			go func() { rf.leaderAbortChannel <- true }() //abdicate leadership, non-blocking send
 		} else if rf.state == candidate {
 			//fmt.Printf("Candidate %d abdicate!\n", rf.me)
-			rf.electAbortChannel <- true //abort election
+			go func() { rf.electAbortChannel <- true }() //abort election, non-blocking send
 		}
-		rf.state = follower
 
 	case args.Term == rf.currentTerm:
 		//normal
@@ -256,14 +261,10 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			fmt.Printf("ERROR! Another leader in current term?!") //impossible
 		} else if rf.state == candidate {
 			//fmt.Printf("Candidate %d abdicate!\n", rf.me)
-			rf.electAbortChannel <- true //abort election
-			rf.state = follower
+			go func() { rf.electAbortChannel <- true }() //abort election
 		}
 	}
 
-	if rf.state != follower {
-		fmt.Printf("ERROR! We are %v instead of a follower?!\n", rf.state)
-	}
 	rf.resetTimer() //reset timer
 
 	return
@@ -331,13 +332,20 @@ type RequestVoteReply struct {
 //
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
+
+	//IMPORTANT
+	//RPC handler do not change state itself.
+	//It only send Abort messages to leader() or elect().
+	//changing state is done by them
+	//otherwise leader() or candidate() may be confused about their state.
+
 	//different from AppendEntries: reset timer only when we grant the vote.
 	rf.mu.Lock() //hold the lock during the whole process
 	defer rf.mu.Unlock()
 	defer func() { reply.Term = rf.currentTerm }()
 
 	grantVote := func() {
-		fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
+		//fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
 		rf.resetTimer() //reset timer
 		rf.votedFor = args.CandidateID
 		reply.VoteGranted = true
@@ -354,11 +362,10 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 
 		if rf.state == leader {
 			//fmt.Printf("Leader %d find Outdated passively!\n", rf.me)
-			rf.leaderAbortChannel <- true //abdicate leadership
+			go func() { rf.leaderAbortChannel <- true }() //abdicate leadership, non-blocking send
 		} else if rf.state == candidate {
-			rf.electAbortChannel <- true //abort election
+			go func() { rf.electAbortChannel <- true }() //abort election, non-blocking send
 		}
-		rf.state = follower
 
 		//vote for him immediately
 		grantVote()
@@ -472,21 +479,20 @@ func (rf *Raft) killed() bool {
 
 func (rf *Raft) leader() {
 	rf.mu.Lock()
-	fmt.Printf("leader:%d\n", rf.me)
-	rf.state = leader
+	//fmt.Printf("leader:%d\n", rf.me)
 	currentTerm := rf.currentTerm
 	rf.mu.Unlock()
-	terminateFlag := false //since the main time of the subgoroutines are spent on waiting for RPC reply, this mutex is ok.(It will not totally serialize the subgoroutines.)
+
 	heartbeatChannel := make(chan AppendEntriesReply)
-	terminateChannels := make([]chan bool, len(rf.peers))
-	terminate := func() { //must already hold the lock.
-		fmt.Printf("leader %d terminate\n", rf.me)
-		rf.tfLock.Lock()
-		terminateFlag = true
-		rf.tfLock.Unlock()
+	terminatChannel := make(chan bool, len(rf.peers)-1) //Buffered channel. To inform subgoroutines to terminate
+
+	terminate := func() { //must holding the lock.
+		//fmt.Printf("leader %d terminate\n", rf.me)
+		for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
+			terminatChannel <- true
+		}
 		rf.state = follower
-		//rf.ticker() //reset timer
-		rf.resetTimer()
+		rf.resetTimer() //restart ticker
 	}
 
 	//send heartbeat in parallel
@@ -494,7 +500,6 @@ func (rf *Raft) leader() {
 		if server == rf.me { //do not send to myself
 			continue
 		}
-		terminateChannels[server] = make(chan bool)
 		go func(server int) { //use seperate goroutines to send messages: can set independent timers.
 			args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me}
 			timer := time.NewTimer(0)
@@ -505,6 +510,10 @@ func (rf *Raft) leader() {
 				//since rf.sendAppendEntries may spend quite a lot of time before timeout, we need to stop waiting early.
 				ok := false
 				innerTimer := time.NewTimer(heartbeatInterval / 2) //must fire within heartbeatInterval.
+
+				//here using two select to realize:
+				//consumer listening for a while, then timeout and stop listening
+				//producer goroutine won't leak
 				innerChannel := make(chan bool)
 				go func(innerChannel chan bool) {
 					select {
@@ -517,20 +526,15 @@ func (rf *Raft) leader() {
 				case <-innerTimer.C:
 				}
 
-				//thread leakage
-				//TODO: fix it.
+				//thread leakage fixed using buffered channel: terminateChannel.
 				if ok {
-					heartbeatChannel <- reply
+					select {
+					case heartbeatChannel <- reply:
+					case <-terminatChannel:
+						return
+					}
 				}
 				timer.Reset(heartbeatInterval)
-
-				//check: whether need to terminate
-				rf.tfLock.Lock()
-				if terminateFlag == true {
-					rf.tfLock.Unlock()
-					return
-				}
-				rf.tfLock.Unlock()
 			}
 		}(server)
 	}
@@ -539,7 +543,14 @@ func (rf *Raft) leader() {
 		select {
 		case reply := <-heartbeatChannel:
 			rf.mu.Lock()
-			if rf.currentTerm != currentTerm { //already updated
+			if rf.currentTerm != currentTerm { //already updated by RPC handler
+				select { //this must be executed when holding lock to prevent racing with RPC handlers.
+				//IMPORTANT
+				//drain rf.leaderAbortChannel befor we abdicate leadership
+				//otherwise may cause thread leakage
+				case <-rf.leaderAbortChannel:
+				default:
+				}
 				terminate()
 				rf.mu.Unlock()
 				return
@@ -547,6 +558,13 @@ func (rf *Raft) leader() {
 			if reply.Term > rf.currentTerm {
 				//we are outdated
 				//fmt.Printf("Leader %d find Outdated!\n", rf.me)
+				select { //this must be executed when holding lock to prevent racing with RPC handlers.
+				//IMPORTANT
+				//drain rf.leaderAbortChannel befor we abdicate leadership
+				//otherwise may cause thread leakage
+				case <-rf.leaderAbortChannel:
+				default:
+				}
 				rf.currentTerm = reply.Term
 				terminate()
 				rf.mu.Unlock()
@@ -574,29 +592,28 @@ func (rf *Raft) elect() {
 	rf.votedFor = rf.me //vote for itself
 	rf.mu.Unlock()
 
-	getVote := 1 //vote for itself
-	abort := false
-	voteChannel := make(chan RequestVoteReply) //used to get reply from sub goroutings who are requesting vote
+	var flag bool = true
+	getVote := 1                                        //vote for itself
+	voteChannel := make(chan RequestVoteReply)          //used to get reply from sub goroutings who are requesting vote
+	terminatChannel := make(chan bool, len(rf.peers)-1) //Buffered channel. To inform subgoroutines to terminate
 
 	//request vote in parallel
 	for server := range rf.peers {
 		if server == rf.me { //do not send to myself
 			continue
 		}
+
 		go func(server int) {
-			//if we try to retry sendRequestVote in a loop whenever ok==false
-			//it will be very hard to abort the election right.
-			//I failed to come up with a proper solution.
-			//I tried to create an abortChannel for every goroutine sending requests.
-			//If it gets an abort in the channel while looping to retry sending,
-			//it will stop and return.
-			//however it is hard for the elect() goroutine to determine sending abort signals to which abortChannels.
-			//If we send the abort signal to channels whose holder has already jumped out of the loop,
-			//the elect() goroutine will block...
-			//So I choose to send the request only once regardless of ok's value.
+			//send only once is enough to satisfy raft rules.
 			reply := RequestVoteReply{}
 			rf.sendRequestVote(server, &args, &reply)
-			voteChannel <- reply
+
+			//thread leakage fixed using buffered channel: terminateChannel.
+			select {
+			case voteChannel <- reply:
+			case <-terminatChannel:
+				return
+			}
 		}(server)
 	}
 
@@ -604,33 +621,109 @@ func (rf *Raft) elect() {
 	for i := 0; i < len(rf.peers)-1; i++ { //get exactly len(rf.peers)-1 replies to avoid leaking threads.
 		select {
 		case reply := <-voteChannel:
-			if abort { //this election is already aborted, so ignore all coming replies.
-				continue
-			}
 			rf.mu.Lock()
-			if reply.Term > rf.currentTerm {
-				//abort election
-				abort = true
-				rf.currentTerm = reply.Term
-				rf.state = follower
+			if rf.currentTerm != currentTerm { //already updated by RPC handler
+				//terminate all subgoroutines
+				for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
+					terminatChannel <- true
+				}
+
+				select { //this must be executed when holding lock to prevent racing with RPC handlers.
+				//IMPORTANT
+				//drain rf.leaderAbortChannel befor we abdicate leadership
+				//otherwise may cause thread leakage
+				case flag = <-electAbortChannel:
+				default:
+				}
+				if flag { //if flag is false, means that a new election has been started. Then do not change anything.
+					rf.state = follower
+				}
+				rf.mu.Unlock()
+				return
+			}
+			if reply.Term > rf.currentTerm { //abort election
+				//terminate all subgoroutines
+				for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
+					terminatChannel <- true
+				}
+
+				select { //this must be executed when holding lock to prevent racing with RPC handlers.
+				//IMPORTANT
+				//drain electAbortChannel befor we abdicate candidateship
+				//otherwise may cause thread leakage
+				case flag = <-electAbortChannel:
+				default:
+				}
+				if flag {
+					rf.currentTerm = reply.Term
+					rf.state = follower
+				}
+				rf.mu.Unlock()
+				return
 			}
 			rf.mu.Unlock()
 			if reply.VoteGranted == true {
 				getVote++
 				if getVote > len(rf.peers)/2 { //wins the election
-					abort = true
-					//rf.tickerAbortChannel <- true
-					go rf.leader() //the transition of state is done in leader()
+					//terminate all subgoroutines
+					for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
+						terminatChannel <- true
+					}
+
+					select { //this must be executed when holding lock to prevent racing with RPC handlers.
+					//IMPORTANT
+					//drain electAbortChannel befor we abdicate candidateship
+					//otherwise may cause thread leakage
+					case flag = <-electAbortChannel:
+					default:
+					}
+					if !flag {
+
+						return
+					}
+					rf.mu.Lock()
+					rf.state = leader //first change state, then execute leader(). To prevent race.
+					rf.mu.Unlock()
+					go rf.leader()
+					return
 				}
 			}
-		case <-electAbortChannel: //abort election
-			rf.mu.Lock()
-			rf.state = follower
-			rf.mu.Unlock()
-			abort = true
+		case flag = <-electAbortChannel: //abort election
+			//terminate all subgoroutines
+			for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
+				terminatChannel <- true
+			}
+
+			if flag {
+				rf.mu.Lock()
+				rf.state = follower
+				rf.mu.Unlock()
+			}
+			return
 		}
 	}
 
+	//Here rf.state must still be candidate,
+	//since only elect() itself can really change state when rf.state==candidate
+	rf.mu.Lock()
+	select { //this must be executed when holding lock to prevent racing with RPC handlers.
+	//IMPORTANT
+	//drain rf.electAbortChannel befor we abdicate candidateship
+	//otherwise may stuck!
+	case <-electAbortChannel:
+	default:
+	}
+	rf.state = follower
+	rf.mu.Unlock()
+
+	//terminate all subgoroutines
+	for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
+		terminatChannel <- true
+	}
+
+	return
+
+	//fmt.Printf("Cndidate %d exit\n", rf.me)
 }
 
 // The ticker go routine starts a new election if this peer hasn't received
@@ -662,7 +755,7 @@ func (rf *Raft) ticker() {
 		rf.mu.Lock()
 		if rf.state != leader {
 			if rf.state == candidate { //a new round of election
-				rf.electAbortChannel <- true           //abort last election
+				rf.electAbortChannel <- false          //abort last election
 				rf.electAbortChannel = make(chan bool) // a new channel
 			}
 			go rf.elect() //begin election and restart timer
