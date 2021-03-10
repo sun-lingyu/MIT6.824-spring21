@@ -237,6 +237,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	defer rf.mu.Unlock()
 	defer func() { reply.Term = rf.currentTerm }()
 
+	//fmt.Printf("server %d get heartbeat from %d. state is %d\n", rf.me, args.LeaderID, rf.state)
+
 	switch {
 	case args.Term < rf.currentTerm:
 		//outdated request
@@ -345,7 +347,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	defer func() { reply.Term = rf.currentTerm }()
 
 	grantVote := func() {
-		//fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
+		fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
 		rf.resetTimer() //reset timer
 		rf.votedFor = args.CandidateID
 		reply.VoteGranted = true
@@ -515,6 +517,7 @@ func (rf *Raft) leader() {
 				//consumer listening for a while, then timeout and stop listening
 				//producer goroutine won't leak
 				innerChannel := make(chan bool)
+				//fmt.Printf("leader %d send heartbeat to %d\n", rf.me, server)
 				go func(innerChannel chan bool) {
 					select {
 					case innerChannel <- rf.sendAppendEntries(server, &args, &reply):
@@ -586,7 +589,7 @@ func (rf *Raft) elect() {
 	electAbortChannel := rf.electAbortChannel
 	rf.state = candidate
 	rf.currentTerm++
-	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
+	fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
 	currentTerm := rf.currentTerm
 	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
 	rf.votedFor = rf.me //vote for itself
@@ -618,7 +621,8 @@ func (rf *Raft) elect() {
 	}
 
 	//listen to results
-	for i := 0; i < len(rf.peers)-1; i++ { //get exactly len(rf.peers)-1 replies to avoid leaking threads.
+	for i := 0; i < len(rf.peers)-1; i++ { //get at most len(rf.peers)-1 replies.
+		//fmt.Printf("Candidate %d listen to packet %d\n", rf.me, i)
 		select {
 		case reply := <-voteChannel:
 			rf.mu.Lock()
