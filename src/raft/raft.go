@@ -337,7 +337,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	defer func() { reply.Term = rf.currentTerm }()
 
 	grantVote := func() {
-		//fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
+		fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
 		rf.resetTimer() //reset timer
 		rf.votedFor = args.CandidateID
 		reply.VoteGranted = true
@@ -472,7 +472,7 @@ func (rf *Raft) killed() bool {
 
 func (rf *Raft) leader() {
 	rf.mu.Lock()
-	//fmt.Printf("leader:%d\n", rf.me)
+	fmt.Printf("leader:%d\n", rf.me)
 	rf.state = leader
 	currentTerm := rf.currentTerm
 	rf.mu.Unlock()
@@ -480,12 +480,13 @@ func (rf *Raft) leader() {
 	heartbeatChannel := make(chan AppendEntriesReply)
 	terminateChannels := make([]chan bool, len(rf.peers))
 	terminate := func() { //must already hold the lock.
-		//fmt.Printf("leader terminate\n")
+		fmt.Printf("leader %d terminate\n", rf.me)
 		rf.tfLock.Lock()
 		terminateFlag = true
 		rf.tfLock.Unlock()
 		rf.state = follower
-		rf.resetTimer() //reset timer
+		//rf.ticker() //reset timer
+		rf.resetTimer()
 	}
 
 	//send heartbeat in parallel
@@ -506,13 +507,18 @@ func (rf *Raft) leader() {
 				innerTimer := time.NewTimer(heartbeatInterval / 2) //must fire within heartbeatInterval.
 				innerChannel := make(chan bool)
 				go func(innerChannel chan bool) {
-					innerChannel <- rf.sendAppendEntries(server, &args, &reply)
+					select {
+					case innerChannel <- rf.sendAppendEntries(server, &args, &reply):
+					default:
+					}
 				}(innerChannel)
 				select {
 				case ok = <-innerChannel:
 				case <-innerTimer.C:
 				}
 
+				//thread leakage
+				//TODO: fix it.
 				if ok {
 					heartbeatChannel <- reply
 				}
@@ -559,6 +565,7 @@ func (rf *Raft) leader() {
 
 func (rf *Raft) elect() {
 	rf.mu.Lock()
+	electAbortChannel := rf.electAbortChannel
 	rf.state = candidate
 	rf.currentTerm++
 	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
@@ -612,11 +619,11 @@ func (rf *Raft) elect() {
 				getVote++
 				if getVote > len(rf.peers)/2 { //wins the election
 					abort = true
-					rf.tickerAbortChannel <- true
+					//rf.tickerAbortChannel <- true
 					go rf.leader() //the transition of state is done in leader()
 				}
 			}
-		case <-rf.electAbortChannel: //abort election
+		case <-electAbortChannel: //abort election
 			rf.mu.Lock()
 			rf.state = follower
 			rf.mu.Unlock()
@@ -629,6 +636,8 @@ func (rf *Raft) elect() {
 // The ticker go routine starts a new election if this peer hasn't received
 // heartsbeats recently.
 func (rf *Raft) ticker() {
+	//fmt.Printf("ticker %d start\n", rf.me)
+	//ticker never exit.
 	rf.timerLock.Lock()
 	rf.timer = time.NewTimer(time.Duration(rand.Int())%electionTimeoutInterval + electionTimeoutStart)
 	rf.timerLock.Unlock()
@@ -639,26 +648,35 @@ func (rf *Raft) ticker() {
 		//my implementation does not use timer.Sleep()
 		//All used time.Timer().
 
-		select {
-		case <-rf.timer.C:
-			if rf.killed() {
-				break
-			}
-
-			//timer fired
-			//start election
-			//must do election in a seperate thread
-			//since election and timer has to run concurrently.
-
-			go rf.elect() //begin election and restart timer
-
-			rf.timerLock.Lock()
-			duration := time.Duration(rand.Int())%electionTimeoutInterval + electionTimeoutStart
-			rf.timer.Reset(duration)
-			rf.timerLock.Unlock()
-		case <-rf.tickerAbortChannel:
-			return
+		//select {
+		//case <-rf.timer.C:
+		<-rf.timer.C
+		if rf.killed() {
+			break
 		}
+
+		//timer fired
+		//start election
+		//must do election in a seperate thread
+		//since election and timer has to run concurrently.
+		rf.mu.Lock()
+		if rf.state != leader {
+			if rf.state == candidate { //a new round of election
+				rf.electAbortChannel <- true           //abort last election
+				rf.electAbortChannel = make(chan bool) // a new channel
+			}
+			go rf.elect() //begin election and restart timer
+		}
+		rf.mu.Unlock()
+
+		rf.timerLock.Lock()
+		duration := time.Duration(rand.Int())%electionTimeoutInterval + electionTimeoutStart
+		rf.timer.Reset(duration)
+		rf.timerLock.Unlock()
+		//case <-rf.tickerAbortChannel:
+		//	fmt.Printf("ticker %d exit\n", rf.me)
+		//	return
+		//}
 	}
 }
 
