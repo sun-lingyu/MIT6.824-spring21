@@ -109,14 +109,11 @@ type Raft struct {
 	//(added by me
 	state serverState //0:follower; 1:candidate; 2:leader
 	//tickerResetChannel chan bool
-	electAbortChannel      chan bool
-	applyCh                chan ApplyMsg
-	leaderAbortChannel     chan bool
-	tickerAbortChannel     chan bool
-	timer                  *time.Timer
-	timerLock              sync.Mutex
-	leaderTerminateLock    sync.Mutex //used for terminating leadership. see leader().
-	candidateTerminateLock sync.Mutex //used for terminating candidateship. see elect().
+	electAbortChannel  chan bool
+	applyCh            chan ApplyMsg
+	leaderAbortChannel chan bool
+	timer              *time.Timer
+	timerLock          sync.Mutex
 	// Look at the paper's Figure 2 for a description of what
 	// state a Raft server must maintain.
 
@@ -818,7 +815,6 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	rf.electAbortChannel = make(chan bool)
 	rf.leaderAbortChannel = make(chan bool)
-	rf.tickerAbortChannel = make(chan bool)
 	rf.applyCh = applyCh
 
 	rand.Seed(int64(rf.me))
