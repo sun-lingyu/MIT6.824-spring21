@@ -347,7 +347,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	defer func() { reply.Term = rf.currentTerm }()
 
 	grantVote := func() {
-		fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
+		//fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
 		rf.resetTimer() //reset timer
 		rf.votedFor = args.CandidateID
 		reply.VoteGranted = true
@@ -589,7 +589,7 @@ func (rf *Raft) elect() {
 	electAbortChannel := rf.electAbortChannel
 	rf.state = candidate
 	rf.currentTerm++
-	fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
+	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
 	currentTerm := rf.currentTerm
 	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
 	rf.votedFor = rf.me //vote for itself
