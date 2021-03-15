@@ -58,7 +58,9 @@ func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, curre
 		}
 		rf.mu.Unlock()
 	} else {
+		rf.mu.Lock()
 		rf.nextIndex[server]--
+		rf.mu.Unlock()
 	}
 	return true
 }
@@ -197,6 +199,7 @@ func (rf *Raft) leader() {
 	DPrintf("leader:%d\n", rf.me)
 
 	rf.mu.Lock()
+	rf.state = leader
 	//Volatile state on leaders:
 	rf.nextIndex = make([]int, len(rf.peers))
 	for server := range rf.nextIndex {

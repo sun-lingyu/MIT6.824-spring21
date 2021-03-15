@@ -101,9 +101,6 @@ func (rf *Raft) elect() {
 
 						return
 					}
-					rf.mu.Lock()
-					rf.state = leader //first change state, then execute leader(). To prevent race.
-					rf.mu.Unlock()
 					go rf.leader()
 					return
 				}
