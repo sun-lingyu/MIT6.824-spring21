@@ -227,13 +227,14 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	//changing state is done by them
 	//otherwise leader() or candidate() may be confused about their state.
 	rf.mu.Lock() //hold the lock during entire handle process
-	DPrintf("server %d receive AppendEntries\n", rf.me)
+	DPrintf("server %d receive AppendEntries from %d\n", rf.me, args.LeaderID)
 	defer rf.mu.Unlock()
 	defer func() { reply.Term = rf.currentTerm }()
 
 	switch {
 	case args.Term < rf.currentTerm:
 		//outdated request
+		DPrintf("server %d: false1, args.Term%d < rf.currentTerm%d\n", rf.me, args.Term, rf.currentTerm)
 		reply.Success = false
 		return
 
@@ -277,6 +278,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	if args.PrevLogIndex > 0 && (args.PrevLogIndex >= len(rf.log) || rf.log[args.PrevLogIndex].Term != args.PrevLogTerm) {
 		//Reply false if log doesn’t contain an entry at prevLogIndex whose term matches prevLogTerm
 		reply.Success = false
+		DPrintf("server %d: false2\n", rf.me)
+		DPrintf("args.PrevLogIndex: %d,len(rf.log): %d\n", args.PrevLogIndex, len(rf.log))
 		return
 	}
 	DPrintf("reply.Success = true on server %d\n", rf.me)
@@ -367,7 +370,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	defer func() { reply.Term = rf.currentTerm }()
 
 	grantVote := func() {
-		//fmt.Printf("process %d vote for process %d\n", rf.me, args.CandidateID)
+		DPrintf("server %d vote for server %d\n", rf.me, args.CandidateID)
 		rf.resetTimer() //reset timer
 		rf.votedFor = args.CandidateID
 		reply.VoteGranted = true
@@ -559,6 +562,7 @@ func (rf *Raft) ticker() {
 				rf.electAbortChannel <- false          //abort last election
 				rf.electAbortChannel = make(chan bool) // a new channel
 			}
+			DPrintf("server %d: timer fire and begin election\n", rf.me)
 			go rf.elect() //begin election and restart timer
 		}
 		rf.mu.Unlock()

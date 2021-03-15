@@ -1,6 +1,7 @@
 package raft
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -60,6 +61,9 @@ func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, curre
 	} else {
 		rf.mu.Lock()
 		rf.nextIndex[server]--
+		if rf.nextIndex[server] < 1 {
+			fmt.Printf("ERROR: rf.nextIndex[server] < 1 (=%d)\n", rf.nextIndex[server])
+		}
 		rf.mu.Unlock()
 	}
 	return true
@@ -75,10 +79,11 @@ func (rf *Raft) leaderProcess(currentTerm int, replyChannel chan AppendEntriesRe
 		go func(server int) { //use seperate goroutines to send messages: can set independent timers.
 			//initial heartbeat.
 			rf.mu.Lock()
-			lastLogEntryIndex := len(rf.log) - 1
-			lastLogEntryTerm := rf.log[lastLogEntryIndex].Term
-			args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: lastLogEntryIndex, PrevLogTerm: lastLogEntryTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
+			prevLogIndex := rf.nextIndex[server] - 1 //IMPORTANT: prevLogIndex, not lastLogEntryIndex!
+			prevLogTerm := rf.log[prevLogIndex].Term
+			args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
 			rf.mu.Unlock()
+			DPrintf("leader %d send heartbeat to %d\n", rf.me, server)
 			ok, reply := rf.sender(args, server, replyChannel, terminateChannel)
 			if ok {
 				if rf.receiver(args, reply, currentTerm, terminateChannel, server) == false {
@@ -98,9 +103,11 @@ func (rf *Raft) leaderProcess(currentTerm int, replyChannel chan AppendEntriesRe
 					//if it wakes up and find still idle,
 					//then it must be woken up by heartBeatChannel,
 					//should send heartbeat.
-					lastLogEntryTerm := rf.log[lastLogEntryIndex].Term
-					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: lastLogEntryIndex, PrevLogTerm: lastLogEntryTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
+					prevLogIndex := rf.nextIndex[server] - 1 //IMPORTANT: prevLogIndex, not lastLogEntryIndex!(though equal here.)
+					prevLogTerm := rf.log[prevLogIndex].Term
+					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
 					rf.mu.Unlock()
+					DPrintf("leader %d send heartbeat to %d\n", rf.me, server)
 					ok, reply = rf.sender(args, server, replyChannel, terminateChannel)
 					if ok {
 						if rf.receiver(args, reply, currentTerm, terminateChannel, server) == false {
@@ -132,6 +139,8 @@ func (rf *Raft) leaderProcess(currentTerm int, replyChannel chan AppendEntriesRe
 						return
 					default:
 					}
+					prevLogIndex = rf.nextIndex[server] - 1
+					prevLogTerm = rf.log[prevLogIndex].Term
 					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: rf.log[prevLogIndex+1:], LeaderCommit: rf.commitIndex}
 					rf.mu.Unlock()
 					ok, reply = rf.sender(args, server, replyChannel, terminateChannel)
@@ -141,8 +150,6 @@ func (rf *Raft) leaderProcess(currentTerm int, replyChannel chan AppendEntriesRe
 						}
 					}
 					rf.mu.Lock()
-					prevLogIndex = rf.nextIndex[server] - 1
-					prevLogTerm = rf.log[prevLogIndex].Term
 					lastLogEntryIndex = len(rf.log) - 1
 					//MAYBE NEED TO WAIT FOR A WHILE TO GIVE SOME TIME FOR THE RECEIVER(leader()) TO CHANGE THE STATE
 				}
