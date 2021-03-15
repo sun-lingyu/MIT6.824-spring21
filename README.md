@@ -1,6 +1,6 @@
 # MIT6.824-spring21
 
-RAFT Lab 2ACancel Changes
+RAFT Lab 2A
 
 针对这次实验写了个博客
 
