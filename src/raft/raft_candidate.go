@@ -1,22 +1,20 @@
 package raft
 
-func (rf *Raft) elect() {
-	rf.mu.Lock()
-	electAbortChannel := rf.electAbortChannel
-	rf.state = candidate
-	rf.currentTerm++
-	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
-	currentTerm := rf.currentTerm
-	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
-	rf.votedFor = rf.me //vote for itself
-	rf.persist()
-	rf.mu.Unlock()
+func (rf *Raft) checkRequestVote(reply RequestVoteReply, currentTerm int) bool {
+	if rf.currentTerm != currentTerm { //already updated by RPC handler
+		return false
+	}
+	if reply.Term > rf.currentTerm {
+		//we are outdated
+		rf.currentTerm = reply.Term
+		rf.persist()
 
-	var flag bool = true
-	getVote := 1                                         //vote for itself
-	voteChannel := make(chan RequestVoteReply)           //used to get reply from sub goroutings who are requesting vote
-	terminateChannel := make(chan bool, len(rf.peers)-1) //Buffered channel. To inform subgoroutines to terminate
+		return false
+	}
+	return true
+}
 
+func (rf *Raft) candidateProcess(args RequestVoteArgs, currentTerm int) {
 	//request vote in parallel
 	for server := range rf.peers {
 		if server == rf.me { //do not send to myself
@@ -26,119 +24,45 @@ func (rf *Raft) elect() {
 		go func(server int) {
 			//send only once is enough to satisfy raft rules.
 			reply := RequestVoteReply{}
-			rf.sendRequestVote(server, &args, &reply)
-
-			//thread leakage fixed using buffered channel: terminateChannel.
-			select {
-			case voteChannel <- reply:
-			case <-terminateChannel:
-				return
+			DPrintf("server %d send requestvote to %d\n", rf.me, server)
+			ok := rf.sendRequestVote(server, &args, &reply)
+			if ok {
+				DPrintf("server %d receive requestvote from %d\n", rf.me, server)
+				rf.mu.Lock()
+				defer rf.mu.Unlock()
+				if currentTerm != rf.currentTerm || rf.state != candidate || rf.getVote >= len(rf.peers)/2+1 || rf.checkRequestVote(reply, currentTerm) == false {
+					return
+				}
+				DPrintf("server %d receive requestvote from %d: passed check\n", rf.me, server)
+				if reply.VoteGranted {
+					DPrintf("server %d receive requestvote from %d: vote granted\n", rf.me, server)
+					rf.getVote++
+					if rf.getVote == len(rf.peers)/2+1 {
+						go rf.leader()
+					}
+				}
 			}
 		}(server)
 	}
+}
 
-	//listen to results
-	for i := 0; i < len(rf.peers)-1; i++ { //get at most len(rf.peers)-1 replies.
-		//fmt.Printf("Candidate %d listen to packet %d\n", rf.me, i)
-		select {
-		case reply := <-voteChannel:
-			rf.mu.Lock()
-			if rf.currentTerm != currentTerm { //already updated by RPC handler
-				//terminate all subgoroutines
-				for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
-					terminateChannel <- true
-				}
-
-				select { //this must be executed when holding lock to prevent racing with RPC handlers.
-				//IMPORTANT
-				//drain rf.electAbortChannel befor we abdicate leadership
-				//otherwise may cause thread leakage
-				case flag = <-electAbortChannel:
-				default:
-				}
-				if flag { //if flag is false, means that a new election has been started. Then do not change anything.
-					rf.state = follower
-				}
-				rf.mu.Unlock()
-				return
-			}
-			if reply.Term > rf.currentTerm { //abort election
-				//terminate all subgoroutines
-				for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
-					terminateChannel <- true
-				}
-
-				select { //this must be executed when holding lock to prevent racing with RPC handlers.
-				//IMPORTANT
-				//drain electAbortChannel befor we abdicate candidateship
-				//otherwise may cause thread leakage
-				case flag = <-electAbortChannel:
-				default:
-				}
-				if flag {
-					rf.currentTerm = reply.Term
-					rf.persist()
-					rf.state = follower
-				}
-				rf.mu.Unlock()
-				return
-			}
-			rf.mu.Unlock()
-			if reply.VoteGranted == true { //get vote
-				getVote++
-				if getVote > len(rf.peers)/2 { //wins the election
-					//terminate all subgoroutines
-					for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
-						terminateChannel <- true
-					}
-
-					select { //this must be executed when holding lock to prevent racing with RPC handlers.
-					//IMPORTANT
-					//drain electAbortChannel befor we abdicate candidateship
-					//otherwise may cause thread leakage
-					case flag = <-electAbortChannel:
-					default:
-					}
-					if !flag {
-
-						return
-					}
-					go rf.leader()
-					return
-				}
-			}
-		case flag = <-electAbortChannel: //abort election
-			//terminate all subgoroutines
-			for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
-				terminateChannel <- true
-			}
-
-			if flag {
-				rf.mu.Lock()
-				rf.state = follower
-				rf.mu.Unlock()
-			}
-			return
-		}
-	}
-
-	//Here rf.state must still be candidate,
-	//since only elect() itself can really change state when rf.state==candidate
+func (rf *Raft) candidate() {
 	rf.mu.Lock()
-	select { //this must be executed when holding lock to prevent racing with RPC handlers.
-	//IMPORTANT
-	//drain rf.electAbortChannel befor we abdicate candidateship
-	//otherwise may stuck!
-	case <-electAbortChannel:
-	default:
+	if rf.state == leader { //check if leader
+		rf.mu.Unlock()
+		return
 	}
-	rf.state = follower
+
+	rf.state = candidate
+	rf.currentTerm++
+	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
+	currentTerm := rf.currentTerm
+	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
+	rf.votedFor = rf.me //vote for itself
+	rf.persist()
+	rf.getVote = 1
 	rf.mu.Unlock()
 
-	//terminate all subgoroutines
-	for i := 0; i < len(rf.peers)-1; i++ { //at most len(rf.peers)-1 subgoroutines waiting.
-		terminateChannel <- true
-	}
-
-	return
+	//start len(rf.peers) subgoroutines to handle leader job seperately.
+	rf.candidateProcess(args, currentTerm)
 }
