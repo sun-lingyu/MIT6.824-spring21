@@ -109,11 +109,11 @@ type Raft struct {
 	// state a Raft server must maintain.
 
 	//added in lab2B:
-	leaderAbortCond *sync.Cond
-	newLogCome      *sync.Cond //only valid in leader state
+	leaderAbortCond    *sync.Cond
+	candidateAbortCond *sync.Cond
+	newLogCome         *sync.Cond //only valid in leader state
 
-	getVote            int
-	candidateAbortFlag bool
+	getVote int
 }
 
 func (rf *Raft) resetTimer() {
@@ -307,8 +307,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	if args.PrevLogIndex > 0 && (args.PrevLogIndex >= len(rf.log) || rf.log[args.PrevLogIndex].Term != args.PrevLogTerm) {
 		//Reply false if log doesn’t contain an entry at prevLogIndex whose term matches prevLogTerm
 		reply.Success = false
-		//DPrintf("server %d: false2\n", rf.me)
-		//DPrintf("args.PrevLogIndex: %d,len(rf.log): %d\n", args.PrevLogIndex, len(rf.log))
+		DPrintf("server %d: false2\n", rf.me)
+		DPrintf("args.PrevLogIndex: %d,len(rf.log): %d\n", args.PrevLogIndex, len(rf.log))
 
 		if args.PrevLogIndex >= len(rf.log) {
 			reply.ConflictTermFirstIndex = len(rf.log)
@@ -325,8 +325,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 		return
 	}
-	//DPrintf("reply.Success = true on server %d\n", rf.me)
-	//DPrintf("len(args.Entries): %d\n", len(args.Entries))
+	DPrintf("reply.Success = true on server %d\n", rf.me)
+	DPrintf("len(args.Entries): %d\n", len(args.Entries))
 
 	reply.Success = true
 
@@ -354,16 +354,16 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	for j := i; j < len(args.Entries); j++ {
 		rf.log = append(rf.log, args.Entries[j])
 		rf.persist()
-		//DPrintf("server %d append: %d at %d", rf.me, rf.log[len(rf.log)-1], len(rf.log)-1)
-		//DPrintf("server %d prev:%d curr:%d\n", rf.me, args.PrevLogIndex, args.Entries)
+		DPrintf("server %d append: %d at %d", rf.me, rf.log[len(rf.log)-1], len(rf.log)-1)
+		DPrintf("server %d prev:%d curr:%d\n", rf.me, args.PrevLogIndex, args.Entries)
 	}
 
 	if args.LeaderCommit > rf.commitIndex {
 		rf.commitIndex = min(args.LeaderCommit, len(rf.log)-1) //index of last new entry
 		for rf.commitIndex > rf.lastApplied {
 			rf.lastApplied++
-			//DPrintf("server %d admit %d at %d.\n\n", rf.me, rf.log[rf.lastApplied].Command, rf.lastApplied)
-			//DPrintf("server %d log entries: %d %d\n", rf.me, rf.log[rf.lastApplied].Command, rf.log[rf.lastApplied-1].Command)
+			DPrintf("server %d admit %d at %d.\n\n", rf.me, rf.log[rf.lastApplied].Command, rf.lastApplied)
+			DPrintf("server %d log entries: %d %d\n", rf.me, rf.log[rf.lastApplied].Command, rf.log[rf.lastApplied-1].Command)
 			rf.applyCh <- ApplyMsg{CommandValid: true, Command: rf.log[rf.lastApplied].Command, CommandIndex: rf.lastApplied}
 		}
 	}
@@ -449,6 +449,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			time.Sleep(10 * time.Millisecond) //TODO: double check: whether apropriate?
 			rf.mu.Lock()
 			for rf.state != follower {
+				//fmt.Printf("RequestVote: state not changed to follower yet(%d), need to sleep\n", rf.state)
 				rf.mu.Unlock()
 				rf.leaderAbortCond.Signal()
 				time.Sleep(10 * time.Millisecond) //TODO: double check: whether apropriate?
@@ -610,10 +611,6 @@ func (rf *Raft) ticker() {
 		duration := time.Duration(rand.Int())%electionTimeoutInterval + electionTimeoutStart
 		rf.timer.Reset(duration)
 		rf.timerLock.Unlock()
-		//case <-rf.tickerAbortChannel:
-		//	fmt.Printf("ticker %d exit\n", rf.me)
-		//	return
-		//}
 	}
 }
 
@@ -651,12 +648,12 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	//added in lab2B
 	rf.leaderAbortCond = sync.NewCond(&sync.Mutex{})
+	rf.candidateAbortCond = sync.NewCond(&sync.Mutex{})
 	rf.newLogCome = sync.NewCond(&sync.Mutex{})
 
 	rand.Seed(int64(rf.me))
 	// start ticker goroutine to start elections
 	go rf.ticker()
-	DPrintf("--------------------server %d start\n", rf.me)
 
 	return rf
 }
