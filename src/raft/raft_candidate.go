@@ -9,6 +9,7 @@ func (rf *Raft) elect() {
 	currentTerm := rf.currentTerm
 	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
 	rf.votedFor = rf.me //vote for itself
+	rf.persist()
 	rf.mu.Unlock()
 
 	var flag bool = true
@@ -76,6 +77,7 @@ func (rf *Raft) elect() {
 				}
 				if flag {
 					rf.currentTerm = reply.Term
+					rf.persist()
 					rf.state = follower
 				}
 				rf.mu.Unlock()

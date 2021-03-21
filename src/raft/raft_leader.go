@@ -45,27 +45,47 @@ func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, curre
 	if rf.checkAppendEntriesReply(reply, currentTerm, terminateChannel) == false {
 		return false
 	}
-
+	rf.mu.Lock()
 	if reply.Success {
-		rf.mu.Lock()
 		rf.nextIndex[server] = args.PrevLogIndex + len(args.Entries) + 1
 		rf.matchIndex[server] = args.PrevLogIndex + len(args.Entries)
-		rf.commitIndex = findKthLargest(rf.matchIndex, len(rf.peers)/2+1)
-		DPrintf("leader matchIndex: %v\n", rf.matchIndex)
-		for rf.commitIndex > rf.lastApplied {
-			rf.lastApplied++
-			DPrintf("server %d admit %d %d.\n\n", rf.me, rf.log[rf.lastApplied].Command, rf.lastApplied)
-			rf.applyCh <- ApplyMsg{CommandValid: true, Command: rf.log[rf.lastApplied].Command, CommandIndex: rf.lastApplied}
+		majorityMatchIndex := findKthLargest(rf.matchIndex, len(rf.peers)/2+1)
+		if majorityMatchIndex > rf.commitIndex && rf.log[majorityMatchIndex].Term == rf.currentTerm {
+			rf.commitIndex = majorityMatchIndex
+			DPrintf("leader matchIndex: %v\n", rf.matchIndex)
+			for rf.commitIndex > rf.lastApplied {
+				rf.lastApplied++
+				DPrintf("server %d admit %d %d.\n\n", rf.me, rf.log[rf.lastApplied].Command, rf.lastApplied)
+				rf.applyCh <- ApplyMsg{CommandValid: true, Command: rf.log[rf.lastApplied].Command, CommandIndex: rf.lastApplied}
+			}
 		}
-		rf.mu.Unlock()
+
 	} else {
-		rf.mu.Lock()
-		rf.nextIndex[server]--
-		if rf.nextIndex[server] < 1 {
-			fmt.Printf("ERROR: rf.nextIndex[server] < 1 (=%d)\n", rf.nextIndex[server])
+		tmp := rf.nextIndex[server]
+		//reply.Success == false
+		if reply.ConflictEntryTerm == -1 {
+			//follower's log shorter than rf.nextIndex[server]
+			rf.nextIndex[server] = reply.ConflictTermFirstIndex
+			//fmt.Printf("here, shorter\n")
+		} else if reply.ConflictEntryTerm < args.PrevLogTerm {
+			//go back to last term of the leader
+			//fmt.Printf("here, <\n")
+			for rf.nextIndex[server] > 1 && rf.log[rf.nextIndex[server]-1].Term == args.PrevLogTerm {
+				rf.nextIndex[server]--
+			}
+		} else {
+			//reply.ConflictEntryTerm > args.PrevLogTerm
+			//go back to last term of the follower
+			rf.nextIndex[server] = reply.ConflictTermFirstIndex
+			//fmt.Printf("here, >\n")
 		}
-		rf.mu.Unlock()
+		//fmt.Printf("rf.nextIndex[server] decreased: %d\n", rf.nextIndex[server])
+
+		if rf.nextIndex[server] < 1 {
+			fmt.Printf("ERROR: rf.nextIndex[server] < 1 (=%d)\n", tmp-rf.nextIndex[server])
+		}
 	}
+	rf.mu.Unlock()
 	return true
 }
 
@@ -188,6 +208,7 @@ func (rf *Raft) checkAppendEntriesReply(reply AppendEntriesReply, currentTerm in
 	if reply.Term > rf.currentTerm {
 		//we are outdated
 		rf.currentTerm = reply.Term
+		rf.persist()
 		//TODO: double check the logic here is right.
 		select {
 		case <-terminateChannel:

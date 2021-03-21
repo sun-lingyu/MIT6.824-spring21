@@ -18,13 +18,13 @@ package raft
 //
 
 import (
-	//	"bytes"
+	"bytes"
 
 	"fmt"
 	"sync"
 	"sync/atomic"
 
-	//	"6.824/labgob"
+	"6.824/labgob"
 	"6.824/labrpc"
 
 	"math/rand"
@@ -159,6 +159,13 @@ func (rf *Raft) persist() {
 	// e.Encode(rf.yyy)
 	// data := w.Bytes()
 	// rf.persister.SaveRaftState(data)
+	w := new(bytes.Buffer)
+	e := labgob.NewEncoder(w)
+	e.Encode(rf.currentTerm)
+	e.Encode(rf.votedFor)
+	e.Encode(rf.log)
+	data := w.Bytes()
+	rf.persister.SaveRaftState(data)
 }
 
 //
@@ -184,6 +191,20 @@ func (rf *Raft) readPersist(data []byte) {
 	//   rf.xxx = xxx
 	//   rf.yyy = yyy
 	// }
+	r := bytes.NewBuffer(data)
+	d := labgob.NewDecoder(r)
+	var currentTerm int
+	var votedFor int
+	var log []LogEntry
+	if d.Decode(&currentTerm) != nil ||
+		d.Decode(&votedFor) != nil ||
+		d.Decode(&log) != nil {
+		fmt.Printf("server %d readPersist: decode error!", rf.me)
+	} else {
+		rf.currentTerm = currentTerm
+		rf.votedFor = votedFor
+		rf.log = log
+	}
 }
 
 //
@@ -216,8 +237,10 @@ type AppendEntriesArgs struct {
 }
 
 type AppendEntriesReply struct {
-	Term    int
-	Success bool
+	Term                   int
+	Success                bool
+	ConflictEntryTerm      int
+	ConflictTermFirstIndex int
 }
 
 func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply) {
@@ -231,6 +254,9 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	defer rf.mu.Unlock()
 	defer func() { reply.Term = rf.currentTerm }()
 
+	reply.ConflictEntryTerm = -1
+	reply.ConflictTermFirstIndex = -1
+
 	switch {
 	case args.Term < rf.currentTerm:
 		//outdated request
@@ -241,6 +267,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	case args.Term > rf.currentTerm:
 		//we are outdated
 		rf.currentTerm = args.Term
+
+		rf.persist()
 
 		if rf.state == leader {
 			//fmt.Printf("Leader %d find Outdated passively!\n", rf.me)
@@ -280,6 +308,20 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		reply.Success = false
 		DPrintf("server %d: false2\n", rf.me)
 		DPrintf("args.PrevLogIndex: %d,len(rf.log): %d\n", args.PrevLogIndex, len(rf.log))
+
+		if args.PrevLogIndex >= len(rf.log) {
+			reply.ConflictTermFirstIndex = len(rf.log)
+			reply.ConflictEntryTerm = -1
+			return
+		}
+
+		reply.ConflictEntryTerm = rf.log[args.PrevLogIndex].Term
+		conflictTermFirstIndex := args.PrevLogIndex
+		for conflictTermFirstIndex >= 1 && rf.log[conflictTermFirstIndex].Term == reply.ConflictEntryTerm {
+			conflictTermFirstIndex--
+		}
+		reply.ConflictTermFirstIndex = conflictTermFirstIndex + 1
+
 		return
 	}
 	DPrintf("reply.Success = true on server %d\n", rf.me)
@@ -304,11 +346,13 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		//(same index but different terms),
 		//delete the existing entry and all that follow it
 		rf.log = rf.log[:args.PrevLogIndex+i+1]
+		rf.persist()
 		break
 	}
 
 	for j := i; j < len(args.Entries); j++ {
 		rf.log = append(rf.log, args.Entries[j])
+		rf.persist()
 		DPrintf("server %d append: %d at %d", rf.me, rf.log[len(rf.log)-1], len(rf.log)-1)
 		DPrintf("server %d prev:%d curr:%d\n", rf.me, args.PrevLogIndex, args.Entries)
 	}
@@ -373,6 +417,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		DPrintf("server %d vote for server %d\n", rf.me, args.CandidateID)
 		rf.resetTimer() //reset timer
 		rf.votedFor = args.CandidateID
+		rf.persist()
 		reply.VoteGranted = true
 	}
 
@@ -385,6 +430,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		if args.Term > rf.currentTerm {
 			//we are outdated
 			rf.currentTerm = args.Term
+			rf.persist()
 
 			if rf.state == leader {
 				//fmt.Printf("Leader %d find Outdated passively!\n", rf.me)
@@ -394,6 +440,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			}
 
 			rf.votedFor = -1
+			rf.persist()
 
 			//can not vote for him immediately!!!
 			//check state
@@ -500,6 +547,7 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 
 	//start the agreement
 	rf.log = append(rf.log, LogEntry{term, command})
+	rf.persist()
 	rf.matchIndex[rf.me] = index
 	DPrintf("\nstart on leader %d\n", rf.me)
 	//inform goroutines in sendLog()

@@ -1,0 +1,2315 @@
+Test (2C): Figure 8 (unreliable) ...
+2021/03/21 10:36:39 server 1: timer fire and begin election
+2021/03/21 10:36:39 server 4 vote for server 1
+2021/03/21 10:36:39 server 2 vote for server 1
+2021/03/21 10:36:39 leader:1
+2021/03/21 10:36:39 leader 1 send heartbeat to 0
+2021/03/21 10:36:39 leader 1 send heartbeat to 3
+2021/03/21 10:36:39 leader 1 send heartbeat to 2
+2021/03/21 10:36:39 leader 1 send heartbeat to 4
+2021/03/21 10:36:39 server 3 vote for server 1
+2021/03/21 10:36:39 leader 1 send heartbeat to 0
+2021/03/21 10:36:39 server 3 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 3
+2021/03/21 10:36:39 len(args.Entries): 0
+2021/03/21 10:36:39 
+start on leader 1
+2021/03/21 10:36:39 server 4 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 4
+2021/03/21 10:36:39 len(args.Entries): 0
+2021/03/21 10:36:39 server 2 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 2
+2021/03/21 10:36:39 len(args.Entries): 0
+2021/03/21 10:36:39 server 0 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 0
+2021/03/21 10:36:39 len(args.Entries): 0
+2021/03/21 10:36:39 server 3 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 3
+2021/03/21 10:36:39 len(args.Entries): 1
+2021/03/21 10:36:39 server 3 append: {1 5487} at 1
+2021/03/21 10:36:39 server 3 prev:0 curr:[{1 5487}]
+2021/03/21 10:36:39 leader 1 send heartbeat to 3
+2021/03/21 10:36:39 server 2 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 2
+2021/03/21 10:36:39 len(args.Entries): 1
+2021/03/21 10:36:39 server 2 append: {1 5487} at 1
+2021/03/21 10:36:39 server 2 prev:0 curr:[{1 5487}]
+2021/03/21 10:36:39 leader matchIndex: [0 1 1 1 0]
+2021/03/21 10:36:39 server 1 admit 5487 1.
+
+2021/03/21 10:36:39 server 4 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 4
+2021/03/21 10:36:39 len(args.Entries): 1
+2021/03/21 10:36:39 server 4 append: {1 5487} at 1
+2021/03/21 10:36:39 server 4 prev:0 curr:[{1 5487}]
+2021/03/21 10:36:39 server 3 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 3
+2021/03/21 10:36:39 len(args.Entries): 0
+2021/03/21 10:36:39 leader 1 send heartbeat to 2
+2021/03/21 10:36:39 server 2 receive AppendEntries from 1
+2021/03/21 10:36:39 reply.Success = true on server 2
+2021/03/21 10:36:39 len(args.Entries): 0
+2021/03/21 10:36:39 server 2 admit 5487 at 1.
+
+2021/03/21 10:36:39 server 2 log entries: 5487 %!d(<nil>)
+2021/03/21 10:36:39 leader 1 send heartbeat to 4
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 server 4 receive AppendEntries from 1
+2021/03/21 10:36:40 reply.Success = true on server 4
+2021/03/21 10:36:40 len(args.Entries): 0
+2021/03/21 10:36:40 server 4 admit 5487 at 1.
+
+2021/03/21 10:36:40 server 4 log entries: 5487 %!d(<nil>)
+2021/03/21 10:36:40 server 3 receive AppendEntries from 1
+2021/03/21 10:36:40 reply.Success = true on server 3
+2021/03/21 10:36:40 len(args.Entries): 1
+2021/03/21 10:36:40 server 3 append: {1 9769} at 2
+2021/03/21 10:36:40 server 3 prev:1 curr:[{1 9769}]
+2021/03/21 10:36:40 server 3 admit 5487 at 1.
+
+2021/03/21 10:36:40 server 3 log entries: 5487 %!d(<nil>)
+2021/03/21 10:36:40 leader 1 send heartbeat to 3
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 server 3 receive AppendEntries from 1
+2021/03/21 10:36:40 reply.Success = true on server 3
+2021/03/21 10:36:40 len(args.Entries): 0
+2021/03/21 10:36:40 server 2 receive AppendEntries from 1
+2021/03/21 10:36:40 reply.Success = true on server 2
+2021/03/21 10:36:40 len(args.Entries): 1
+2021/03/21 10:36:40 server 2 append: {1 9769} at 2
+2021/03/21 10:36:40 server 2 prev:1 curr:[{1 9769}]
+2021/03/21 10:36:40 server 4 receive AppendEntries from 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 reply.Success = true on server 4
+2021/03/21 10:36:40 len(args.Entries): 1
+2021/03/21 10:36:40 server 4 append: {1 9769} at 2
+2021/03/21 10:36:40 server 4 prev:1 curr:[{1 9769}]
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 
+start on leader 1
+2021/03/21 10:36:40 server 0: timer fire and begin election
+2021/03/21 10:36:41 server 4: timer fire and begin election
+2021/03/21 10:36:41 server 2 vote for server 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 server 0 vote for server 4
+2021/03/21 10:36:41 leader:4
+2021/03/21 10:36:41 leader 4 send heartbeat to 0
+2021/03/21 10:36:41 leader 4 send heartbeat to 3
+2021/03/21 10:36:41 leader 4 send heartbeat to 1
+2021/03/21 10:36:41 leader 4 send heartbeat to 2
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 server 0 receive AppendEntries from 4
+2021/03/21 10:36:41 server 0: false2
+2021/03/21 10:36:41 args.PrevLogIndex: 2,len(rf.log): 1
+2021/03/21 10:36:41 server 3 receive AppendEntries from 4
+2021/03/21 10:36:41 reply.Success = true on server 3
+2021/03/21 10:36:41 len(args.Entries): 0
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 server 2 receive AppendEntries from 4
+2021/03/21 10:36:41 reply.Success = true on server 2
+2021/03/21 10:36:41 len(args.Entries): 0
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:41 
+start on leader 1
+2021/03/21 10:36:41 
+start on leader 4
+2021/03/21 10:36:42 server 3: timer fire and begin election
+2021/03/21 10:36:42 server 2: timer fire and begin election
+2021/03/21 10:36:42 server 0 vote for server 2
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 server 2: timer fire and begin election
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:42 
+start on leader 1
+2021/03/21 10:36:42 
+start on leader 4
+2021/03/21 10:36:43 server 0 vote for server 2
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 server 3: timer fire and begin election
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 
+start on leader 1
+2021/03/21 10:36:43 
+start on leader 4
+2021/03/21 10:36:43 server 0: timer fire and begin election
+2021/03/21 10:36:43 server 3: timer fire and begin election
+2021/03/21 10:36:43 server 2 vote for server 3
+2021/03/21 10:36:43 server 0 vote for server 3
+2021/03/21 10:36:43 leader:3
+2021/03/21 10:36:43 leader 3 send heartbeat to 0
+2021/03/21 10:36:43 leader 3 send heartbeat to 1
+2021/03/21 10:36:43 leader 3 send heartbeat to 2
+2021/03/21 10:36:43 leader 3 send heartbeat to 4
+2021/03/21 10:36:43 server 0 receive AppendEntries from 3
+2021/03/21 10:36:43 server 0: false2
+2021/03/21 10:36:43 args.PrevLogIndex: 2,len(rf.log): 1
+2021/03/21 10:36:43 server 2 receive AppendEntries from 3
+2021/03/21 10:36:43 reply.Success = true on server 2
+2021/03/21 10:36:43 len(args.Entries): 0
+2021/03/21 10:36:43 leader 3 send heartbeat to 2
+2021/03/21 10:36:43 server 0 receive AppendEntries from 3
+2021/03/21 10:36:43 server 0: false2
+2021/03/21 10:36:43 args.PrevLogIndex: 1,len(rf.log): 1
+2021/03/21 10:36:43 server 2 receive AppendEntries from 3
+2021/03/21 10:36:43 reply.Success = true on server 2
+2021/03/21 10:36:43 len(args.Entries): 0
+2021/03/21 10:36:43 server 0 receive AppendEntries from 3
+2021/03/21 10:36:43 reply.Success = true on server 0
+2021/03/21 10:36:43 len(args.Entries): 2
+2021/03/21 10:36:43 server 0 append: {1 5487} at 1
+2021/03/21 10:36:43 server 0 prev:0 curr:[{1 5487} {1 9769}]
+2021/03/21 10:36:43 server 0 append: {1 9769} at 2
+2021/03/21 10:36:43 server 0 prev:0 curr:[{1 5487} {1 9769}]
+2021/03/21 10:36:43 server 0 admit 5487 at 1.
+
+2021/03/21 10:36:43 server 0 log entries: 5487 %!d(<nil>)
+2021/03/21 10:36:43 leader 3 send heartbeat to 0
+2021/03/21 10:36:44 server 0 receive AppendEntries from 3
+2021/03/21 10:36:44 reply.Success = true on server 0
+2021/03/21 10:36:44 len(args.Entries): 0
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 server 2 receive AppendEntries from 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 reply.Success = true on server 2
+2021/03/21 10:36:44 len(args.Entries): 1
+2021/03/21 10:36:44 server 2 append: {7 3997} at 3
+2021/03/21 10:36:44 server 2 prev:2 curr:[{7 3997}]
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 server 0 receive AppendEntries from 3
+2021/03/21 10:36:44 reply.Success = true on server 0
+2021/03/21 10:36:44 len(args.Entries): 1
+2021/03/21 10:36:44 server 0 append: {7 3997} at 3
+2021/03/21 10:36:44 server 0 prev:2 curr:[{7 3997}]
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 4
+2021/03/21 10:36:44 server 0 receive AppendEntries from 4
+2021/03/21 10:36:44 server 0: false1, args.Term3 < rf.currentTerm7
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 server 0: timer fire and begin election
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 server 4 vote for server 0
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 server 2 vote for server 0
+2021/03/21 10:36:44 leader:0
+2021/03/21 10:36:44 
+start on leader 0
+2021/03/21 10:36:44 leader 0 send heartbeat to 3
+2021/03/21 10:36:44 leader 0 send heartbeat to 4
+2021/03/21 10:36:44 leader 0 send heartbeat to 1
+2021/03/21 10:36:44 leader 0 send heartbeat to 2
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 server 2 receive AppendEntries from 0
+2021/03/21 10:36:44 reply.Success = true on server 2
+2021/03/21 10:36:44 len(args.Entries): 0
+2021/03/21 10:36:44 
+start on leader 0
+2021/03/21 10:36:44 
+start on leader 1
+2021/03/21 10:36:44 
+start on leader 3
+2021/03/21 10:36:44 server 4 receive AppendEntries from 0
+2021/03/21 10:36:44 server 4: false2
+2021/03/21 10:36:44 args.PrevLogIndex: 3,len(rf.log): 89
+2021/03/21 10:36:44 server 4 receive AppendEntries from 0
+2021/03/21 10:36:44 reply.Success = true on server 4
+2021/03/21 10:36:44 len(args.Entries): 3
+2021/03/21 10:36:44 server 4 append: {7 3997} at 3
+2021/03/21 10:36:44 server 4 prev:2 curr:[{7 3997} {8 6649} {8 4335}]
+2021/03/21 10:36:44 server 4 append: {8 6649} at 4
+2021/03/21 10:36:44 server 4 prev:2 curr:[{7 3997} {8 6649} {8 4335}]
+2021/03/21 10:36:44 server 4 append: {8 4335} at 5
+2021/03/21 10:36:44 server 4 prev:2 curr:[{7 3997} {8 6649} {8 4335}]
+2021/03/21 10:36:44 leader 0 send heartbeat to 4
+2021/03/21 10:36:44 server 2 receive AppendEntries from 0
+2021/03/21 10:36:44 reply.Success = true on server 2
+2021/03/21 10:36:44 len(args.Entries): 2
+2021/03/21 10:36:44 server 2 append: {8 6649} at 4
+2021/03/21 10:36:44 server 2 prev:3 curr:[{8 6649} {8 4335}]
+2021/03/21 10:36:44 server 2 append: {8 4335} at 5
+2021/03/21 10:36:44 server 2 prev:3 curr:[{8 6649} {8 4335}]
+2021/03/21 10:36:44 leader matchIndex: [5 0 5 0 5]
+2021/03/21 10:36:44 server 0 admit 9769 2.
+
+2021/03/21 10:36:44 server 0 admit 3997 3.
+
+2021/03/21 10:36:44 server 0 admit 6649 4.
+
+2021/03/21 10:36:44 server 0 admit 4335 5.
+
+2021/03/21 10:36:44 server 4 receive AppendEntries from 0
+2021/03/21 10:36:44 reply.Success = true on server 4
+2021/03/21 10:36:44 len(args.Entries): 0
+2021/03/21 10:36:44 leader 0 send heartbeat to 2
+2021/03/21 10:36:44 server 2 receive AppendEntries from 0
+2021/03/21 10:36:44 reply.Success = true on server 2
+2021/03/21 10:36:44 len(args.Entries): 0
+2021/03/21 10:36:44 server 2 admit 9769 at 2.
+
+2021/03/21 10:36:44 server 2 log entries: 9769 5487
+2021/03/21 10:36:44 server 2 admit 3997 at 3.
+
+2021/03/21 10:36:44 server 2 log entries: 3997 9769
+2021/03/21 10:36:44 server 2 admit 6649 at 4.
+
+2021/03/21 10:36:44 server 2 log entries: 6649 3997
+2021/03/21 10:36:44 server 2 admit 4335 at 5.
+
+2021/03/21 10:36:44 server 2 log entries: 4335 6649
+2021/03/21 10:36:45 leader 0 send heartbeat to 4
+2021/03/21 10:36:45 leader 0 send heartbeat to 2
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 3
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 3
+2021/03/21 10:36:45 server 2 receive AppendEntries from 0
+2021/03/21 10:36:45 reply.Success = true on server 2
+2021/03/21 10:36:45 len(args.Entries): 0
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 3
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 3
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 3
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 3
+2021/03/21 10:36:45 server 4 receive AppendEntries from 3
+2021/03/21 10:36:45 server 4: false1, args.Term7 < rf.currentTerm8
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 
+start on leader 0
+2021/03/21 10:36:45 
+start on leader 1
+2021/03/21 10:36:45 server 4: timer fire and begin election
+2021/03/21 10:36:45 server 3 vote for server 4
+2021/03/21 10:36:45 server 2 vote for server 4
+2021/03/21 10:36:45 leader:4
+2021/03/21 10:36:45 leader 4 send heartbeat to 3
+2021/03/21 10:36:45 leader 4 send heartbeat to 2
+2021/03/21 10:36:45 leader 4 send heartbeat to 0
+2021/03/21 10:36:45 leader 4 send heartbeat to 1
+2021/03/21 10:36:46 server 2 receive AppendEntries from 4
+2021/03/21 10:36:46 reply.Success = true on server 2
+2021/03/21 10:36:46 len(args.Entries): 0
+2021/03/21 10:36:46 leader 4 send heartbeat to 2
+2021/03/21 10:36:46 server 3 receive AppendEntries from 4
+2021/03/21 10:36:46 server 3: false2
+2021/03/21 10:36:46 args.PrevLogIndex: 5,len(rf.log): 38
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 server 2 receive AppendEntries from 4
+2021/03/21 10:36:46 reply.Success = true on server 2
+2021/03/21 10:36:46 len(args.Entries): 0
+2021/03/21 10:36:46 server 3 receive AppendEntries from 4
+2021/03/21 10:36:46 server 3: false2
+2021/03/21 10:36:46 args.PrevLogIndex: 4,len(rf.log): 38
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 server 3 receive AppendEntries from 4
+2021/03/21 10:36:46 reply.Success = true on server 3
+2021/03/21 10:36:46 len(args.Entries): 3
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 server 3 append: {8 6649} at 4
+2021/03/21 10:36:46 server 3 prev:3 curr:[{8 6649} {8 4335} {9 6492}]
+2021/03/21 10:36:46 server 3 append: {8 4335} at 5
+2021/03/21 10:36:46 server 3 prev:3 curr:[{8 6649} {8 4335} {9 6492}]
+2021/03/21 10:36:46 server 3 append: {9 6492} at 6
+2021/03/21 10:36:46 server 3 prev:3 curr:[{8 6649} {8 4335} {9 6492}]
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 server 3 receive AppendEntries from 4
+2021/03/21 10:36:46 reply.Success = true on server 3
+2021/03/21 10:36:46 len(args.Entries): 6
+2021/03/21 10:36:46 server 3 append: {9 4676} at 7
+2021/03/21 10:36:46 server 3 prev:3 curr:[{8 6649} {8 4335} {9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:46 server 3 append: {9 471} at 8
+2021/03/21 10:36:46 server 3 prev:3 curr:[{8 6649} {8 4335} {9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:46 server 3 append: {9 5160} at 9
+2021/03/21 10:36:46 server 3 prev:3 curr:[{8 6649} {8 4335} {9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 1
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 server 3 receive AppendEntries from 1
+2021/03/21 10:36:46 server 3: false1, args.Term1 < rf.currentTerm9
+2021/03/21 10:36:46 server 2 receive AppendEntries from 1
+2021/03/21 10:36:46 server 2: false1, args.Term1 < rf.currentTerm9
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 
+start on leader 0
+2021/03/21 10:36:46 
+start on leader 4
+2021/03/21 10:36:46 server 2: timer fire and begin election
+2021/03/21 10:36:47 server 1 vote for server 2
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 server 3: timer fire and begin election
+2021/03/21 10:36:47 server 1 vote for server 3
+2021/03/21 10:36:47 server 2 vote for server 3
+2021/03/21 10:36:47 leader:3
+2021/03/21 10:36:47 leader 3 send heartbeat to 4
+2021/03/21 10:36:47 leader 3 send heartbeat to 1
+2021/03/21 10:36:47 leader 3 send heartbeat to 2
+2021/03/21 10:36:47 leader 3 send heartbeat to 0
+2021/03/21 10:36:47 server 1 receive AppendEntries from 3
+2021/03/21 10:36:47 server 1: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 9,len(rf.log): 151
+2021/03/21 10:36:47 server 2 receive AppendEntries from 3
+2021/03/21 10:36:47 server 2: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 9,len(rf.log): 6
+2021/03/21 10:36:47 server 2 receive AppendEntries from 3
+2021/03/21 10:36:47 server 2: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 8,len(rf.log): 6
+2021/03/21 10:36:47 server 1 receive AppendEntries from 3
+2021/03/21 10:36:47 server 1: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 8,len(rf.log): 151
+2021/03/21 10:36:47 server 2 receive AppendEntries from 3
+2021/03/21 10:36:47 server 2: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 7,len(rf.log): 6
+2021/03/21 10:36:47 server 2 receive AppendEntries from 3
+2021/03/21 10:36:47 server 2: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 6,len(rf.log): 6
+2021/03/21 10:36:47 server 1 receive AppendEntries from 3
+2021/03/21 10:36:47 server 1: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 7,len(rf.log): 151
+2021/03/21 10:36:47 server 2 receive AppendEntries from 3
+2021/03/21 10:36:47 reply.Success = true on server 2
+2021/03/21 10:36:47 len(args.Entries): 4
+2021/03/21 10:36:47 server 2 append: {9 6492} at 6
+2021/03/21 10:36:47 server 2 prev:5 curr:[{9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:47 server 2 append: {9 4676} at 7
+2021/03/21 10:36:47 server 2 prev:5 curr:[{9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:47 server 2 append: {9 471} at 8
+2021/03/21 10:36:47 server 2 prev:5 curr:[{9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:47 server 2 append: {9 5160} at 9
+2021/03/21 10:36:47 server 2 prev:5 curr:[{9 6492} {9 4676} {9 471} {9 5160}]
+2021/03/21 10:36:47 leader 3 send heartbeat to 2
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 server 2 receive AppendEntries from 3
+2021/03/21 10:36:47 reply.Success = true on server 2
+2021/03/21 10:36:47 len(args.Entries): 0
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 server 1 receive AppendEntries from 3
+2021/03/21 10:36:47 server 1: false2
+2021/03/21 10:36:47 args.PrevLogIndex: 6,len(rf.log): 151
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 server 2 receive AppendEntries from 0
+2021/03/21 10:36:47 
+start on leader 0
+2021/03/21 10:36:47 server 2: false1, args.Term8 < rf.currentTerm11
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 server 1 receive AppendEntries from 0
+2021/03/21 10:36:47 server 1: false1, args.Term8 < rf.currentTerm11
+2021/03/21 10:36:47 server 2 receive AppendEntries from 0
+2021/03/21 10:36:47 server 2: false1, args.Term8 < rf.currentTerm11
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:47 
+start on leader 3
+2021/03/21 10:36:47 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 server 2: timer fire and begin election
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 server 0 vote for server 2
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 server 1: timer fire and begin election
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:48 
+start on leader 3
+2021/03/21 10:36:48 
+start on leader 4
+2021/03/21 10:36:49 server 0: timer fire and begin election
+2021/03/21 10:36:49 server 1 vote for server 0
+2021/03/21 10:36:49 server 2: timer fire and begin election
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 
+start on leader 3
+2021/03/21 10:36:49 
+start on leader 4
+2021/03/21 10:36:49 server 0: timer fire and begin election
+2021/03/21 10:36:49 server 1: timer fire and begin election
+2021/03/21 10:36:50 server 2: timer fire and begin election
+2021/03/21 10:36:50 server 0 vote for server 2
+2021/03/21 10:36:50 server 1 vote for server 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 leader:2
+2021/03/21 10:36:50 leader 2 send heartbeat to 0
+2021/03/21 10:36:50 leader 2 send heartbeat to 1
+2021/03/21 10:36:50 leader 2 send heartbeat to 3
+2021/03/21 10:36:50 leader 2 send heartbeat to 4
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 server 0 receive AppendEntries from 2
+2021/03/21 10:36:50 server 0: false2
+2021/03/21 10:36:50 args.PrevLogIndex: 9,len(rf.log): 70
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 server 1 receive AppendEntries from 2
+2021/03/21 10:36:50 server 1: false2
+2021/03/21 10:36:50 args.PrevLogIndex: 9,len(rf.log): 151
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 server 1 receive AppendEntries from 2
+2021/03/21 10:36:50 server 1: false2
+2021/03/21 10:36:50 args.PrevLogIndex: 9,len(rf.log): 151
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 server 1 receive AppendEntries from 3
+2021/03/21 10:36:50 server 1: false1, args.Term11 < rf.currentTerm15
+2021/03/21 10:36:50 server 0 receive AppendEntries from 3
+2021/03/21 10:36:50 server 0: false1, args.Term11 < rf.currentTerm15
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:50 server 0 receive AppendEntries from 2
+2021/03/21 10:36:50 server 0: false2
+2021/03/21 10:36:50 args.PrevLogIndex: 9,len(rf.log): 70
+2021/03/21 10:36:50 server 1 receive AppendEntries from 2
+2021/03/21 10:36:50 server 1: false2
+2021/03/21 10:36:50 args.PrevLogIndex: 9,len(rf.log): 151
+2021/03/21 10:36:50 
+start on leader 2
+2021/03/21 10:36:50 
+start on leader 3
+2021/03/21 10:36:50 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 server 1 receive AppendEntries from 3
+2021/03/21 10:36:51 server 1: false1, args.Term11 < rf.currentTerm15
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 4
+2021/03/21 10:36:51 server 1 receive AppendEntries from 4
+2021/03/21 10:36:51 server 1: false1, args.Term9 < rf.currentTerm15
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 server 1: timer fire and begin election
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 server 0: timer fire and begin election
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:51 server 1 vote for server 0
+2021/03/21 10:36:51 
+start on leader 2
+2021/03/21 10:36:51 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 server 4: timer fire and begin election
+2021/03/21 10:36:52 server 1 vote for server 4
+2021/03/21 10:36:52 server 0 vote for server 4
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:52 
+start on leader 3
+2021/03/21 10:36:52 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 server 1: timer fire and begin election
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 server 4: timer fire and begin election
+2021/03/21 10:36:53 server 0: timer fire and begin election
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 server 1 vote for server 4
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 server 1 vote for server 0
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:53 
+start on leader 2
+2021/03/21 10:36:53 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 server 0: timer fire and begin election
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 server 1 vote for server 0
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 server 4: timer fire and begin election
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 server 0 vote for server 4
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 server 1 vote for server 4
+2021/03/21 10:36:54 server 0 vote for server 4
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:54 
+start on leader 2
+2021/03/21 10:36:54 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 server 4: timer fire and begin election
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 server 0 vote for server 4
+2021/03/21 10:36:55 server 1 vote for server 4
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:55 
+start on leader 2
+2021/03/21 10:36:55 
+start on leader 3
+2021/03/21 10:36:56 server 0: timer fire and begin election
+2021/03/21 10:36:56 server 4: timer fire and begin election
+2021/03/21 10:36:56 server 1 vote for server 4
+2021/03/21 10:36:56 
+start on leader 2
+2021/03/21 10:36:56 
+start on leader 3
+signal: interrupt
+FAIL	6.824/raft	17.244s
