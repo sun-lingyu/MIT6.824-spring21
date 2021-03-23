@@ -1,0 +1,161 @@
+server 0 started----------------
+server 1 started----------------
+server 2 started----------------
+Test (2B): basic agreement ...
+2021/03/23 20:09:58 server 2 send requestvote to 1
+2021/03/23 20:09:58 server 2 send requestvote to 0
+2021/03/23 20:09:58 server 0 vote for server 2
+2021/03/23 20:09:58 server 2 receive requestvote from 0
+2021/03/23 20:09:58 server 2 receive requestvote from 0: passed check
+2021/03/23 20:09:58 server 2 receive requestvote from 0: vote granted
+2021/03/23 20:09:58 leader:2
+2021/03/23 20:09:58 server 1 vote for server 2
+2021/03/23 20:09:58 leader 2 send heartbeat to 1
+2021/03/23 20:09:58 leader 2 send heartbeat to 1
+fatal error: sync: unlock of unlocked mutex
+2021/03/23 20:09:58 server 2 receive requestvote from 1
+2021/03/23 20:09:58 leader 2 send heartbeat to 0
+
+goroutine 31 [running]:
+runtime.throw(0x6e4855, 0x1e)
+	/usr/lib/go-1.13/src/runtime/panic.go:774 +0x72 fp=0xc000114c68 sp=0xc000114c38 pc=0x4574c2
+sync.throw(0x6e4855, 0x1e)
+	/usr/lib/go-1.13/src/runtime/panic.go:760 +0x35 fp=0xc000114c88 sp=0xc000114c68 pc=0x457445
+sync.(*Mutex).unlockSlow(0xc0000cca20, 0xffffffff)
+	/usr/lib/go-1.13/src/sync/mutex.go:196 +0x10d fp=0xc000114cb0 sp=0xc000114c88 pc=0x49a1cd
+sync.(*Mutex).Unlock(0xc0000cca20)
+	/usr/lib/go-1.13/src/sync/mutex.go:190 +0x7b fp=0xc000114cd8 sp=0xc000114cb0 pc=0x49a0ab
+sync.(*Cond).Wait(0xc000083ac0)
+	/usr/lib/go-1.13/src/sync/cond.go:55 +0x78 fp=0xc000114d08 sp=0xc000114cd8 pc=0x497f38
+6.824/raft.(*Raft).leaderProcess.func1(0xc0000cca20, 0x1, 0x2, 0x0, 0x0, 0x8be6a8, 0x0, 0x0, 0x0, 0x1, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:94 +0x496 fp=0xc000114f78 sp=0xc000114d08 pc=0x66c806
+runtime.goexit()
+	/usr/lib/go-1.13/src/runtime/asm_amd64.s:1357 +0x1 fp=0xc000114f80 sp=0xc000114f78 pc=0x487de1
+created by 6.824/raft.(*Raft).leaderProcess
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:74 +0x3fa
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0xc0000ea000, 0x6e065c, 0x10, 0x6eac58, 0x1)
+	/usr/lib/go-1.13/src/testing/testing.go:961 +0x68a
+testing.runTests.func1(0xc0000ea000)
+	/usr/lib/go-1.13/src/testing/testing.go:1202 +0xa7
+testing.tRunner(0xc0000ea000, 0xc0000a9d40)
+	/usr/lib/go-1.13/src/testing/testing.go:909 +0x19a
+testing.runTests(0xc0000b2720, 0x89f2c0, 0x18, 0x18, 0x0)
+	/usr/lib/go-1.13/src/testing/testing.go:1200 +0x522
+testing.(*M).Run(0xc0000da000, 0x0)
+	/usr/lib/go-1.13/src/testing/testing.go:1117 +0x300
+main.main()
+	_testmain.go:90 +0x224
+
+goroutine 20 [sleep]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+time.Sleep(0x2faf080)
+	/usr/lib/go-1.13/src/runtime/time.go:105 +0x157
+6.824/raft.(*config).one(0xc0000cc5a0, 0x6928c0, 0xc00009c290, 0x3, 0x0, 0x477428)
+	/home/sunlingyu/6.824/src/raft/config.go:545 +0x4a4
+6.824/raft.TestBasicAgree2B(0xc0000ea100)
+	/home/sunlingyu/6.824/src/raft/test_test.go:138 +0x13a
+testing.tRunner(0xc0000ea100, 0x6eac58)
+	/usr/lib/go-1.13/src/testing/testing.go:909 +0x19a
+created by testing.(*T).Run
+	/usr/lib/go-1.13/src/testing/testing.go:960 +0x652
+
+goroutine 21 [select]:
+6.824/labrpc.MakeNetwork.func1(0xc0000c4140)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:153 +0x229
+created by 6.824/labrpc.MakeNetwork
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:151 +0x276
+
+goroutine 22 [chan receive]:
+6.824/raft.(*config).applier(0xc0000cc5a0, 0x0, 0xc000086360)
+	/home/sunlingyu/6.824/src/raft/config.go:162 +0x83
+created by 6.824/raft.(*config).start1
+	/home/sunlingyu/6.824/src/raft/config.go:276 +0x878
+
+goroutine 23 [chan receive]:
+6.824/raft.(*Raft).ticker(0xc0000cc7e0)
+	/home/sunlingyu/6.824/src/raft/raft.go:567 +0x1f4
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:627 +0x49e
+
+goroutine 24 [chan receive]:
+6.824/raft.(*config).applier(0xc0000cc5a0, 0x1, 0xc000086420)
+	/home/sunlingyu/6.824/src/raft/config.go:162 +0x83
+created by 6.824/raft.(*config).start1
+	/home/sunlingyu/6.824/src/raft/config.go:276 +0x878
+
+goroutine 25 [chan receive]:
+6.824/raft.(*Raft).ticker(0xc0000cc900)
+	/home/sunlingyu/6.824/src/raft/raft.go:567 +0x1f4
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:627 +0x49e
+
+goroutine 26 [chan receive]:
+6.824/raft.(*config).applier(0xc0000cc5a0, 0x2, 0xc0000864e0)
+	/home/sunlingyu/6.824/src/raft/config.go:162 +0x83
+created by 6.824/raft.(*config).start1
+	/home/sunlingyu/6.824/src/raft/config.go:276 +0x878
+
+goroutine 27 [chan receive]:
+6.824/raft.(*Raft).ticker(0xc0000cca20)
+	/home/sunlingyu/6.824/src/raft/raft.go:567 +0x1f4
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:627 +0x49e
+
+goroutine 29 [select]:
+6.824/raft.(*Raft).leader.func1(0xc0000c41e0, 0xc0000cca20)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:140 +0x164
+created by 6.824/raft.(*Raft).leader
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:138 +0x31c
+
+goroutine 37 [semacquire]:
+sync.runtime_SemacquireMutex(0xc0000cca24, 0x7ffffff00, 0x1)
+	/usr/lib/go-1.13/src/runtime/sema.go:71 +0x47
+sync.(*Mutex).lockSlow(0xc0000cca20)
+	/usr/lib/go-1.13/src/sync/mutex.go:138 +0x1c1
+sync.(*Mutex).Lock(0xc0000cca20)
+	/usr/lib/go-1.13/src/sync/mutex.go:81 +0x7d
+6.824/raft.(*Raft).candidateProcess.func1(0xc0000cca20, 0xc000152020, 0x1, 0x1)
+	/home/sunlingyu/6.824/src/raft/raft_candidate.go:29 +0x304
+created by 6.824/raft.(*Raft).candidateProcess
+	/home/sunlingyu/6.824/src/raft/raft_candidate.go:22 +0x115
+
+goroutine 32 [runnable]:
+6.824/raft.(*Raft).sender(0xc0000cca20, 0x1, 0x2, 0x0, 0x0, 0x8be6a8, 0x0, 0x0, 0x0, 0x1, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:8
+created by 6.824/raft.(*Raft).leaderProcess.func1
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:77 +0x1c7
+
+goroutine 30 [runnable]:
+syscall.Syscall(0x1, 0x2, 0xc00009a200, 0x31, 0x31, 0x31, 0x0)
+	/usr/lib/go-1.13/src/syscall/asm_linux_amd64.s:18 +0x5
+syscall.write(0x2, 0xc00009a200, 0x31, 0x80, 0xc0000a00d8, 0x0, 0x80000000000)
+	/usr/lib/go-1.13/src/syscall/zsyscall_linux_amd64.go:1005 +0x68
+syscall.Write(0x2, 0xc00009a200, 0x31, 0x80, 0x0, 0x12, 0x8a2870)
+	/usr/lib/go-1.13/src/syscall/syscall_unix.go:202 +0x6c
+internal/poll.(*FD).Write(0xc0000a00c0, 0xc00009a200, 0x31, 0x80, 0x0, 0x0, 0x0)
+	/usr/lib/go-1.13/src/internal/poll/fd_unix.go:268 +0x1f9
+os.(*File).write(...)
+	/usr/lib/go-1.13/src/os/file_unix.go:276
+os.(*File).Write(0xc00009e010, 0xc00009a200, 0x31, 0x80, 0x1d, 0x1d, 0x0)
+	/usr/lib/go-1.13/src/os/file.go:153 +0xa7
+log.(*Logger).Output(0xc0000c4000, 0x2, 0xc0001520c0, 0x1d, 0x0, 0x0)
+	/usr/lib/go-1.13/src/log/log.go:172 +0x39e
+log.Printf(0x6e4b1a, 0x1f, 0xc000158608, 0x2, 0x2)
+	/usr/lib/go-1.13/src/log/log.go:307 +0xb6
+6.824/raft.DPrintf(...)
+	/home/sunlingyu/6.824/src/raft/util.go:13
+6.824/raft.(*Raft).leaderProcess.func1(0xc0000cca20, 0x1, 0x2, 0x0, 0x0, 0x8be6a8, 0x0, 0x0, 0x0, 0x1, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:76 +0x114
+created by 6.824/raft.(*Raft).leaderProcess
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:74 +0x3fa
+
+goroutine 33 [runnable]:
+6.824/raft.(*Raft).sender(0xc0000cca20, 0x1, 0x2, 0x0, 0x0, 0x8be6a8, 0x0, 0x0, 0x0, 0x1, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:8
+created by 6.824/raft.(*Raft).leaderProcess.func1
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:93 +0x466
+exit status 2
+FAIL	6.824/raft	0.855s

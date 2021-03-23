@@ -1,12 +1,10 @@
 package raft
 
 func (rf *Raft) checkRequestVote(reply RequestVoteReply, currentTerm int) bool {
-	if rf.currentTerm != currentTerm { //already updated by RPC handler
-		return false
-	}
 	if reply.Term > rf.currentTerm {
 		//we are outdated
 		rf.currentTerm = reply.Term
+		rf.state = follower
 		rf.persist()
 
 		return false

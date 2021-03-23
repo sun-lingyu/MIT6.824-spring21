@@ -109,11 +109,11 @@ type Raft struct {
 	// state a Raft server must maintain.
 
 	//added in lab2B:
-	leaderAbortCond    *sync.Cond
-	candidateAbortCond *sync.Cond
-	newLogCome         *sync.Cond //only valid in leader state
+	newLogCome *sync.Cond //only valid in leader state
 
-	getVote int
+	getVote                        int
+	heartbeatTimer                 time.Timer
+	heartbeatTimerTerminateChannel chan bool
 }
 
 func (rf *Raft) resetTimer() {
@@ -271,11 +271,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 		rf.persist()
 
-		if rf.state == leader {
-			//fmt.Printf("Leader %d find Outdated passively!\n", rf.me)
-			rf.leaderAbortCond.Signal() //abdicate leadership, non-blocking send
-		} else if rf.state == candidate {
-			//fmt.Printf("Candidate %d abdicate!\n", rf.me)
+		if rf.state != follower {
 			rf.state = follower
 		}
 
@@ -293,17 +289,6 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	rf.resetTimer() //reset timer
 
 	//lab 2b
-
-	//check state
-	rf.mu.Lock()
-	for rf.state != follower {
-		//fmt.Printf("AppendEntries: state not changed to follower yet(%d), need to sleep\n", rf.state)
-		rf.mu.Unlock()
-		rf.leaderAbortCond.Signal()
-		time.Sleep(10 * time.Millisecond) //TODO: double check: whether apropriate?
-		rf.mu.Lock()
-	}
-
 	if args.PrevLogIndex > 0 && (args.PrevLogIndex >= len(rf.log) || rf.log[args.PrevLogIndex].Term != args.PrevLogTerm) {
 		//Reply false if log doesn’t contain an entry at prevLogIndex whose term matches prevLogTerm
 		reply.Success = false
@@ -354,15 +339,14 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	for j := i; j < len(args.Entries); j++ {
 		rf.log = append(rf.log, args.Entries[j])
 		rf.persist()
-		DPrintf("server %d append: %d at %d", rf.me, rf.log[len(rf.log)-1], len(rf.log)-1)
-		DPrintf("server %d prev:%d curr:%d\n", rf.me, args.PrevLogIndex, args.Entries)
+		DPrintf("server %d append: %d", rf.me, len(rf.log)-1)
 	}
 
 	if args.LeaderCommit > rf.commitIndex {
 		rf.commitIndex = min(args.LeaderCommit, len(rf.log)-1) //index of last new entry
 		for rf.commitIndex > rf.lastApplied {
 			rf.lastApplied++
-			DPrintf("server %d admit %d at %d.\n\n", rf.me, rf.log[rf.lastApplied].Command, rf.lastApplied)
+			DPrintf("server %d admit %d.\n\n", rf.me, rf.lastApplied)
 			DPrintf("server %d log entries: %d %d\n", rf.me, rf.log[rf.lastApplied].Command, rf.log[rf.lastApplied-1].Command)
 			rf.applyCh <- ApplyMsg{CommandValid: true, Command: rf.log[rf.lastApplied].Command, CommandIndex: rf.lastApplied}
 		}
@@ -433,28 +417,12 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			rf.currentTerm = args.Term
 			rf.persist()
 
-			if rf.state == leader {
-				//fmt.Printf("Leader %d find Outdated passively!\n", rf.me)
-				rf.leaderAbortCond.Signal()
-			} else if rf.state == candidate {
+			if rf.state != follower {
 				rf.state = follower
 			}
 
 			rf.votedFor = -1
 			rf.persist()
-
-			//can not vote for him immediately!!!
-			//check state
-			rf.mu.Unlock()
-			time.Sleep(10 * time.Millisecond) //TODO: double check: whether apropriate?
-			rf.mu.Lock()
-			for rf.state != follower {
-				//fmt.Printf("RequestVote: state not changed to follower yet(%d), need to sleep\n", rf.state)
-				rf.mu.Unlock()
-				rf.leaderAbortCond.Signal()
-				time.Sleep(10 * time.Millisecond) //TODO: double check: whether apropriate?
-				rf.mu.Lock()
-			}
 		}
 
 		//normal
@@ -633,7 +601,10 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.me = me
 
 	// initialize from state persisted before a crash
-	rf.readPersist(persister.ReadRaftState())
+	//rf.readPersist(persister.ReadRaftState())
+	rf.currentTerm = 0
+	rf.votedFor = -1
+	rf.log = make([]LogEntry, 1) //empty. (first index is one)
 
 	// Your initialization code here (2A, 2B, 2C).
 
@@ -647,12 +618,12 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.applyCh = applyCh
 
 	//added in lab2B
-	rf.leaderAbortCond = sync.NewCond(&sync.Mutex{})
-	rf.candidateAbortCond = sync.NewCond(&sync.Mutex{})
-	rf.newLogCome = sync.NewCond(&sync.Mutex{})
+	rf.newLogCome = sync.NewCond(&rf.mu)
+	rf.heartbeatTimerTerminateChannel = make(chan bool)
 
 	rand.Seed(int64(rf.me))
 	// start ticker goroutine to start elections
+	fmt.Printf("server %d started----------------\n", rf.me)
 	go rf.ticker()
 
 	return rf
