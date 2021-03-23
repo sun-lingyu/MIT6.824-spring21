@@ -621,7 +621,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	rand.Seed(int64(rf.me))
 	// start ticker goroutine to start elections
-	fmt.Printf("server %d started----------------\n", rf.me)
+	DPrintf("server %d started----------------\n", rf.me)
 	go rf.ticker()
 
 	return rf

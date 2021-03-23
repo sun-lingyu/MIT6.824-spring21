@@ -108,7 +108,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 					}
 					prevLogIndex = rf.nextIndex[server] - 1
 					prevLogTerm = rf.log[prevLogIndex].Term
-					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: rf.log[prevLogIndex+1:], LeaderCommit: rf.commitIndex}
+					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log[prevLogIndex+1:]...), LeaderCommit: rf.commitIndex}
 					go rf.sender(args, currentTerm, server)
 					rf.mu.Unlock()
 					time.Sleep(10 * time.Millisecond)
