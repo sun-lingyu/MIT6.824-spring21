@@ -4,8 +4,8 @@ func (rf *Raft) checkRequestVote(reply RequestVoteReply, currentTerm int) bool {
 	if reply.Term > rf.currentTerm {
 		//we are outdated
 		rf.currentTerm = reply.Term
-		rf.state = follower
 		rf.persist()
+		rf.state = follower
 
 		return false
 	}
@@ -51,8 +51,9 @@ func (rf *Raft) candidate() {
 		return
 	}
 
-	rf.state = candidate
 	rf.currentTerm++
+	rf.state = candidate
+
 	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
 	currentTerm := rf.currentTerm
 	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}

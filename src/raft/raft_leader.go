@@ -125,6 +125,7 @@ func (rf *Raft) checkAppendEntriesReply(reply AppendEntriesReply, currentTerm in
 		rf.heartbeatTimerTerminateChannel <- true
 		rf.state = follower
 		rf.currentTerm = reply.Term
+		rf.persist()
 		rf.resetTimer() //restart ticker
 		return false
 	}

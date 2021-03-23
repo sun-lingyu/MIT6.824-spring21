@@ -268,7 +268,6 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	case args.Term > rf.currentTerm:
 		//we are outdated
 		rf.currentTerm = args.Term
-
 		rf.persist()
 
 		if rf.state != follower {
@@ -282,9 +281,9 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		} else if rf.state == candidate {
 			//fmt.Printf("Candidate %d abdicate!\n", rf.me)
 			rf.state = follower
+
 		}
 	}
-
 	rf.resetTimer() //reset timer
 
 	//lab 2b
@@ -337,9 +336,9 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 	for j := i; j < len(args.Entries); j++ {
 		rf.log = append(rf.log, args.Entries[j])
-		rf.persist()
 		DPrintf("server %d append: %d", rf.me, len(rf.log)-1)
 	}
+	rf.persist()
 
 	if args.LeaderCommit > rf.commitIndex {
 		rf.commitIndex = min(args.LeaderCommit, len(rf.log)-1) //index of last new entry
@@ -413,7 +412,6 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		if args.Term > rf.currentTerm {
 			//we are outdated
 			rf.currentTerm = args.Term
-			rf.persist()
 
 			if rf.state != follower {
 				rf.state = follower
@@ -599,10 +597,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.me = me
 
 	// initialize from state persisted before a crash
-	//rf.readPersist(persister.ReadRaftState())
-	rf.currentTerm = 0
-	rf.votedFor = -1
-	rf.log = make([]LogEntry, 1) //empty. (first index is one)
+	rf.readPersist(persister.ReadRaftState())
 
 	// Your initialization code here (2A, 2B, 2C).
 
