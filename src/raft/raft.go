@@ -284,7 +284,6 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			rf.state = follower
 		}
 	}
-	rf.mu.Unlock()
 
 	rf.resetTimer() //reset timer
 

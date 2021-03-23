@@ -11,7 +11,7 @@ func (rf *Raft) sender(args AppendEntriesArgs, currentTerm int, server int) {
 	ok := rf.sendAppendEntries(server, &args, &reply)
 
 	if ok {
-		DPrintf("leader %d receive heartbeatReply from %d\n", rf.me, server)
+		DPrintf("leader %d receive from %d\n", rf.me, server)
 		rf.mu.Lock()
 		defer rf.mu.Unlock()
 		if currentTerm != rf.currentTerm || rf.state != leader || rf.checkAppendEntriesReply(reply, currentTerm) == false {
@@ -75,20 +75,26 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 			//initial heartbeat.
 			DPrintf("leader %d send heartbeat to %d\n", rf.me, server)
 			go rf.sender(args, currentTerm, server)
-
 			rf.mu.Lock()
+			defer rf.mu.Unlock()
 			for !rf.killed() {
+				if rf.currentTerm == currentTerm && rf.state == leader {
+					return
+				}
+
 				//each loop: send all available log entries available and ensure success.
 
 				//if leader is idle, then it should wait until new log entry comes or timer fire.
 				for rf.nextIndex[server] > len(rf.log)-1 {
+					if rf.currentTerm == currentTerm && rf.state == leader {
+						return
+					}
 					//if it wakes up and find still idle,
 					//then it must be woken up by heartBeatChannel,
 					//should send heartbeat.
 					prevLogIndex := rf.nextIndex[server] - 1 //IMPORTANT: prevLogIndex, not lastLogEntryIndex!(though equal here.)
 					prevLogTerm := rf.log[prevLogIndex].Term
 					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
-					rf.mu.Unlock()
 					DPrintf("leader %d send heartbeat to %d\n", rf.me, server)
 					go rf.sender(args, currentTerm, server)
 					rf.newLogCome.Wait()
@@ -96,11 +102,17 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 
 				//not idle
 				//still in rf.mu.Lock()
-				for !rf.killed() && rf.nextIndex[server] <= len(rf.log)-1 {
+				for !rf.killed() {
+					if rf.currentTerm == currentTerm && rf.state == leader {
+						return
+					}
 					prevLogIndex = rf.nextIndex[server] - 1
 					prevLogTerm = rf.log[prevLogIndex].Term
 					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: rf.log[prevLogIndex+1:], LeaderCommit: rf.commitIndex}
 					go rf.sender(args, currentTerm, server)
+					rf.mu.Unlock()
+					time.Sleep(10 * time.Millisecond)
+					rf.mu.Lock()
 				}
 			}
 		}(server)
