@@ -78,7 +78,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 			rf.mu.Lock()
 			defer rf.mu.Unlock()
 			for !rf.killed() {
-				if rf.currentTerm == currentTerm && rf.state == leader {
+				if rf.currentTerm != currentTerm && rf.state != leader {
 					return
 				}
 
@@ -86,7 +86,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 
 				//if leader is idle, then it should wait until new log entry comes or timer fire.
 				for rf.nextIndex[server] > len(rf.log)-1 {
-					if rf.currentTerm == currentTerm && rf.state == leader {
+					if rf.currentTerm != currentTerm && rf.state != leader {
 						return
 					}
 					//if it wakes up and find still idle,
@@ -102,8 +102,8 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 
 				//not idle
 				//still in rf.mu.Lock()
-				for !rf.killed() {
-					if rf.currentTerm == currentTerm && rf.state == leader {
+				for !rf.killed() && rf.nextIndex[server] <= len(rf.log)-1 {
+					if rf.currentTerm != currentTerm && rf.state != leader {
 						return
 					}
 					prevLogIndex = rf.nextIndex[server] - 1

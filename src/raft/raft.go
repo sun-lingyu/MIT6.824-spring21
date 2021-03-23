@@ -346,7 +346,6 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		for rf.commitIndex > rf.lastApplied {
 			rf.lastApplied++
 			DPrintf("server %d admit %d.\n\n", rf.me, rf.lastApplied)
-			DPrintf("server %d log entries: %d %d\n", rf.me, rf.log[rf.lastApplied].Command, rf.log[rf.lastApplied-1].Command)
 			rf.applyCh <- ApplyMsg{CommandValid: true, Command: rf.log[rf.lastApplied].Command, CommandIndex: rf.lastApplied}
 		}
 	}
