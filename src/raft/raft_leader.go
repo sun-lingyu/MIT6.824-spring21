@@ -6,19 +6,26 @@ import (
 )
 
 func (rf *Raft) sender(args AppendEntriesArgs, currentTerm int, server int) {
+	//fmt.Printf("server %d begin sending to server %d, with %d log entrys in args \n", rf.me, server, len(args.Entries))
+	//fmt.Printf("curently %d goroutines.\n", runtime.NumGoroutine())
 	reply := AppendEntriesReply{}
+	//start := time.Now()
 
 	ok := rf.sendAppendEntries(server, &args, &reply)
 
-	if ok {
+	//elapsed := time.Since(start)
+	//log.Printf("server %d received reply from server %d, took %s", rf.me, server, elapsed)
+	if ok && !rf.killed() {
 		DPrintf("leader %d receive from %d\n", rf.me, server)
 		rf.mu.Lock()
 		defer rf.mu.Unlock()
+		//defer fmt.Printf("server %d sender exit, ok==true\n", rf.me)
 		if currentTerm != rf.currentTerm || rf.state != leader || rf.checkAppendEntriesReply(reply, currentTerm) == false {
 			return
 		}
 		rf.receiver(args, reply, currentTerm, server)
 	}
+	//fmt.Printf("server %d sender exit, ok==false\n", rf.me)
 }
 
 func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, currentTerm int, server int) {
@@ -85,7 +92,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 				//each loop: send all available log entries available and ensure success.
 
 				//if leader is idle, then it should wait until new log entry comes or timer fire.
-				for rf.nextIndex[server] > len(rf.log)-1 {
+				for !rf.killed() && rf.nextIndex[server] > len(rf.log)-1 {
 					if rf.currentTerm != currentTerm && rf.state != leader {
 						return
 					}
@@ -111,7 +118,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log[prevLogIndex+1:]...), LeaderCommit: rf.commitIndex}
 					go rf.sender(args, currentTerm, server)
 					rf.mu.Unlock()
-					time.Sleep(10 * time.Millisecond)
+					time.Sleep(heartbeatInterval / 2)
 					rf.mu.Lock()
 				}
 			}
