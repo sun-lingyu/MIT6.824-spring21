@@ -558,8 +558,6 @@ func (rf *Raft) ticker() {
 		//my implementation does not use timer.Sleep()
 		//All used time.Timer().
 
-		//select {
-		//case <-rf.timer.C:
 		<-rf.timer.C
 		if rf.killed() {
 			break

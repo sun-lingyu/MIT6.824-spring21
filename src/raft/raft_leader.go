@@ -118,7 +118,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log[prevLogIndex+1:]...), LeaderCommit: rf.commitIndex}
 					go rf.sender(args, currentTerm, server)
 					rf.mu.Unlock()
-					time.Sleep(heartbeatInterval / 2)
+					time.Sleep(heartbeatInterval / 2) //wait for rf.sender to get reply and process it
 					rf.mu.Lock()
 				}
 			}
