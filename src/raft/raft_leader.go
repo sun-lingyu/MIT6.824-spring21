@@ -16,10 +16,7 @@ func (rf *Raft) sender_snapshot(args InstallSnapshotArgs, currentTerm int, serve
 		if currentTerm != rf.currentTerm || rf.state != leader || rf.checkInstallSnapshotReply(reply, currentTerm) == false {
 			return
 		}
-		if reply.Success {
-			rf.nextIndex[server] = args.LastIncludedIndex + 1
-			rf.matchIndex[server] = args.LastIncludedIndex
-		}
+		rf.nextIndex[server] = args.LastIncludedIndex + 1
 	}
 }
 
@@ -135,12 +132,12 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 						return
 					}
 					prevLogIndex = rf.nextIndex[server] - 1
-					prevLogTerm := rf.log.index(prevLogIndex).Term
 					if prevLogIndex < rf.log.LastIncludedIndex {
 						//should send snapshot
 						args := InstallSnapshotArgs{Term: currentTerm, LeaderID: rf.me, LastIncludedIndex: rf.log.LastIncludedIndex, LastIncludedTerm: rf.log.LastIncludedTerm, Data: rf.snapshot}
 						go rf.sender_snapshot(args, currentTerm, server)
 					} else {
+						prevLogTerm := rf.log.index(prevLogIndex).Term
 						//should send normal appendentries RPC.
 						args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log.Entries[prevLogIndex-rf.log.LastIncludedIndex:]...), LeaderCommit: rf.commitIndex}
 						go rf.sender(args, currentTerm, server)

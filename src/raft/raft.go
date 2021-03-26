@@ -255,17 +255,28 @@ func (rf *Raft) CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int,
 	// Your code here (2D).
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
-	if lastIncludedIndex <= rf.log.LastIncludedIndex {
-		//already created a snapshot
-		fmt.Printf("Snapshot create fail\n")
+
+	if lastIncludedIndex <= rf.commitIndex {
+		//fmt.Printf("CondInstallSnapshot refused\n")
 		return false
 	}
-	rf.log.Entries = append([]LogEntry(nil), rf.log.Entries[lastIncludedIndex-rf.log.LastIncludedIndex:]...)
-	rf.log.LastIncludedIndex = lastIncludedIndex
-	rf.log.LastIncludedTerm = lastIncludedTerm
-	rf.snapshot = snapshot
-	rf.persistStateAndSnapshot(snapshot)
 
+	defer func() {
+		rf.log.LastIncludedIndex = lastIncludedIndex
+		rf.log.LastIncludedTerm = lastIncludedTerm
+		rf.snapshot = snapshot
+		rf.commitIndex = lastIncludedIndex //IMPORTANT
+		rf.lastApplied = lastIncludedIndex //IMPORTANT
+		rf.persistStateAndSnapshot(snapshot)
+
+	}()
+	if lastIncludedIndex <= rf.log.lastIndex() && rf.log.index(lastIncludedIndex).Term == lastIncludedTerm {
+		rf.log.Entries = append([]LogEntry(nil), rf.log.Entries[lastIncludedIndex-rf.log.LastIncludedIndex:]...)
+		return true
+	}
+
+	//discard the entire log
+	rf.log.Entries = make([]LogEntry, 0)
 	return true
 }
 
@@ -275,22 +286,18 @@ func (rf *Raft) CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int,
 // that index. Raft should now trim its log as much as possible.
 func (rf *Raft) Snapshot(index int, snapshot []byte) {
 	// Your code here (2D).
-	fmt.Printf("Snapshot\n")
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
-	fmt.Printf("Snapshot create\n")
+	DPrintf("Server %d: Snapshot create\n", rf.me)
 	if index <= rf.log.LastIncludedIndex {
 		//already created a snapshot
-		fmt.Printf("Snapshot create fail\n")
 		return
 	}
 	rf.log.Entries = append([]LogEntry(nil), rf.log.Entries[index-rf.log.LastIncludedIndex:]...)
 	rf.log.LastIncludedIndex = index
-	rf.log.LastIncludedTerm = index
+	rf.log.LastIncludedTerm = rf.log.index(index).Term
 	rf.snapshot = snapshot
 	rf.persistStateAndSnapshot(snapshot)
-	msg := ApplyMsg{SnapshotValid: true, Snapshot: snapshot, SnapshotIndex: index, SnapshotTerm: rf.log.index(index).Term}
-	go func() { rf.applyCh <- msg }()
 }
 
 type InstallSnapshotArgs struct {
@@ -302,8 +309,7 @@ type InstallSnapshotArgs struct {
 }
 
 type InstallSnapshotReply struct {
-	Term    int
-	Success bool
+	Term int
 }
 
 func (rf *Raft) InstallSnapshot(args *InstallSnapshotArgs, reply *InstallSnapshotReply) {
@@ -316,7 +322,6 @@ func (rf *Raft) InstallSnapshot(args *InstallSnapshotArgs, reply *InstallSnapsho
 	case args.Term < rf.currentTerm:
 		//outdated request
 		DPrintf("server %d: InstallSnapshot, args.Term%d < rf.currentTerm%d\n", rf.me, args.Term, rf.currentTerm)
-		reply.Success = false
 		return
 
 	case args.Term > rf.currentTerm:
@@ -341,29 +346,14 @@ func (rf *Raft) InstallSnapshot(args *InstallSnapshotArgs, reply *InstallSnapsho
 
 	if args.LastIncludedIndex <= rf.log.LastIncludedIndex {
 		//coming snapshot is older than our snapshot
-		fmt.Printf("WARNING: outdated InstallSnapshot. This should be really rare.\n")
-		reply.Success = false
+		DPrintf("WARNING: outdated InstallSnapshot. This should only appear in unreliable cases.\n")
 		return
 	}
 	rf.resetTimer()
 
-	defer func() {
-		reply.Success = true
-		rf.log.LastIncludedIndex = args.LastIncludedIndex
-		rf.log.LastIncludedTerm = args.LastIncludedTerm
-		rf.snapshot = args.Data
-		rf.persistStateAndSnapshot(args.Data)
-		msg := ApplyMsg{SnapshotValid: true, Snapshot: args.Data, SnapshotIndex: args.LastIncludedIndex, SnapshotTerm: args.LastIncludedTerm}
-		rf.applyCh <- msg
-	}()
-	if args.LastIncludedIndex <= rf.log.lastIndex() && rf.log.index(args.LastIncludedIndex).Term == rf.log.LastIncludedTerm {
-		rf.log.Entries = append([]LogEntry(nil), rf.log.Entries[args.LastIncludedIndex-rf.log.LastIncludedIndex:]...)
-		return
-	}
+	msg := ApplyMsg{SnapshotValid: true, Snapshot: args.Data, SnapshotIndex: args.LastIncludedIndex, SnapshotTerm: args.LastIncludedTerm}
+	go func() { rf.applyCh <- msg }()
 
-	//discard the entire log
-	rf.log.Entries = make([]LogEntry, 0)
-	return
 }
 func (rf *Raft) sendInstallSnapshot(server int, args *InstallSnapshotArgs, reply *InstallSnapshotReply) bool {
 	ok := rf.peers[server].Call("Raft.InstallSnapshot", args, reply)
