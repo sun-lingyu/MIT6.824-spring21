@@ -5,6 +5,24 @@ import (
 	"time"
 )
 
+func (rf *Raft) sender_snapshot(args InstallSnapshotArgs, currentTerm int, server int) {
+	reply := InstallSnapshotReply{}
+	ok := rf.sendInstallSnapshot(server, &args, &reply)
+	if ok && !rf.killed() {
+		DPrintf("leader %d receive sendInstallSnapshot reply from %d\n", rf.me, server)
+		rf.mu.Lock()
+		defer rf.mu.Unlock()
+		//defer fmt.Printf("server %d sender exit, ok==true\n", rf.me)
+		if currentTerm != rf.currentTerm || rf.state != leader || rf.checkInstallSnapshotReply(reply, currentTerm) == false {
+			return
+		}
+		if reply.Success {
+			rf.nextIndex[server] = args.LastIncludedIndex + 1
+			rf.matchIndex[server] = args.LastIncludedIndex
+		}
+	}
+}
+
 func (rf *Raft) sender(args AppendEntriesArgs, currentTerm int, server int) {
 	//fmt.Printf("server %d begin sending to server %d, with %d log entrys in args \n", rf.me, server, len(args.Entries))
 	//fmt.Printf("curently %d goroutines.\n", runtime.NumGoroutine())
@@ -34,13 +52,11 @@ func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, curre
 		rf.nextIndex[server] = args.PrevLogIndex + len(args.Entries) + 1
 		rf.matchIndex[server] = args.PrevLogIndex + len(args.Entries)
 		majorityMatchIndex := findKthLargest(rf.matchIndex, len(rf.peers)/2+1)
-		if majorityMatchIndex > rf.commitIndex && rf.log[majorityMatchIndex].Term == rf.currentTerm {
+		if majorityMatchIndex > rf.commitIndex && rf.log.index(majorityMatchIndex).Term == rf.currentTerm {
 			rf.commitIndex = majorityMatchIndex
 			DPrintf("leader matchIndex: %v\n", rf.matchIndex)
-			for rf.commitIndex > rf.lastApplied {
-				rf.lastApplied++
-				DPrintf("server %d admit %d.\n\n", rf.me, rf.lastApplied)
-				rf.applyCh <- ApplyMsg{CommandValid: true, Command: rf.log[rf.lastApplied].Command, CommandIndex: rf.lastApplied}
+			if rf.commitIndex > rf.lastApplied {
+				rf.applyCond.Signal()
 			}
 		}
 
@@ -52,7 +68,12 @@ func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, curre
 			rf.nextIndex[server] = reply.ConflictTermFirstIndex
 		} else if reply.ConflictEntryTerm < args.PrevLogTerm {
 			//go back to last term of the leader
-			for rf.nextIndex[server] > 1 && rf.log[rf.nextIndex[server]-1].Term == args.PrevLogTerm {
+			for rf.nextIndex[server] > rf.log.LastIncludedIndex+1 && rf.log.index(rf.nextIndex[server]-1).Term == args.PrevLogTerm {
+				rf.nextIndex[server]--
+			}
+			if rf.nextIndex[server] != 1 && rf.nextIndex[server] == rf.log.LastIncludedIndex+1 && rf.log.LastIncludedTerm == args.PrevLogTerm {
+				//special case:
+				//we are hitting the snapshot.
 				rf.nextIndex[server]--
 			}
 		} else {
@@ -76,7 +97,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 			continue
 		}
 		prevLogIndex := rf.nextIndex[server] - 1 //IMPORTANT: prevLogIndex, not lastLogEntryIndex!
-		prevLogTerm := rf.log[prevLogIndex].Term
+		prevLogTerm := rf.log.index(prevLogIndex).Term
 		args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
 		go func(server int) { //use seperate goroutines to send messages: can set independent timers.
 			//initial heartbeat.
@@ -92,7 +113,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 				//each loop: send all available log entries available and ensure success.
 
 				//if leader is idle, then it should wait until new log entry comes or timer fire.
-				for !rf.killed() && rf.nextIndex[server] > len(rf.log)-1 {
+				for !rf.killed() && rf.nextIndex[server] > rf.log.lastIndex() {
 					if rf.currentTerm != currentTerm && rf.state != leader {
 						return
 					}
@@ -100,7 +121,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 					//then it must be woken up by heartBeatChannel,
 					//should send heartbeat.
 					prevLogIndex := rf.nextIndex[server] - 1 //IMPORTANT: prevLogIndex, not lastLogEntryIndex!(though equal here.)
-					prevLogTerm := rf.log[prevLogIndex].Term
+					prevLogTerm := rf.log.index(prevLogIndex).Term
 					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: []LogEntry{}, LeaderCommit: rf.commitIndex}
 					DPrintf("leader %d send heartbeat to %d\n", rf.me, server)
 					go rf.sender(args, currentTerm, server)
@@ -109,14 +130,21 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 
 				//not idle
 				//still in rf.mu.Lock()
-				for !rf.killed() && rf.nextIndex[server] <= len(rf.log)-1 {
+				for !rf.killed() && rf.nextIndex[server] <= rf.log.lastIndex() {
 					if rf.currentTerm != currentTerm && rf.state != leader {
 						return
 					}
 					prevLogIndex = rf.nextIndex[server] - 1
-					prevLogTerm = rf.log[prevLogIndex].Term
-					args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log[prevLogIndex+1:]...), LeaderCommit: rf.commitIndex}
-					go rf.sender(args, currentTerm, server)
+					prevLogTerm := rf.log.index(prevLogIndex).Term
+					if prevLogIndex < rf.log.LastIncludedIndex {
+						//should send snapshot
+						args := InstallSnapshotArgs{Term: currentTerm, LeaderID: rf.me, LastIncludedIndex: rf.log.LastIncludedIndex, LastIncludedTerm: rf.log.LastIncludedTerm, Data: rf.snapshot}
+						go rf.sender_snapshot(args, currentTerm, server)
+					} else {
+						//should send normal appendentries RPC.
+						args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log.Entries[prevLogIndex-rf.log.LastIncludedIndex:]...), LeaderCommit: rf.commitIndex}
+						go rf.sender(args, currentTerm, server)
+					}
 					rf.mu.Unlock()
 					time.Sleep(heartbeatInterval / 2) //wait for rf.sender to get reply and process it
 					rf.mu.Lock()
@@ -138,6 +166,18 @@ func (rf *Raft) checkAppendEntriesReply(reply AppendEntriesReply, currentTerm in
 	}
 	return true
 }
+func (rf *Raft) checkInstallSnapshotReply(reply InstallSnapshotReply, currentTerm int) bool {
+	if reply.Term > rf.currentTerm {
+		//we are outdated
+		rf.heartbeatTimerTerminateChannel <- true
+		rf.state = follower
+		rf.currentTerm = reply.Term
+		rf.persist()
+		rf.resetTimer() //restart ticker
+		return false
+	}
+	return true
+}
 
 func (rf *Raft) leader() {
 	DPrintf("leader:%d\n", rf.me)
@@ -147,7 +187,7 @@ func (rf *Raft) leader() {
 	//Volatile state on leaders:
 	rf.nextIndex = make([]int, len(rf.peers))
 	for server := range rf.nextIndex {
-		rf.nextIndex[server] = len(rf.log)
+		rf.nextIndex[server] = rf.log.lastIndex() + 1
 	}
 	rf.matchIndex = make([]int, len(rf.peers)) //initialized to 0.
 

@@ -56,7 +56,7 @@ func (rf *Raft) candidate() {
 
 	//fmt.Printf("elect of process %d, term is %d\n", rf.me, rf.currentTerm)
 	currentTerm := rf.currentTerm
-	args := RequestVoteArgs{currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
+	args := RequestVoteArgs{currentTerm, rf.me, rf.log.lastIndex(), rf.log.index(rf.log.lastIndex()).Term}
 	rf.votedFor = rf.me //vote for itself
 	rf.persist()
 	rf.getVote = 1
