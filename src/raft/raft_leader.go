@@ -60,6 +60,10 @@ func (rf *Raft) receiver(args AppendEntriesArgs, reply AppendEntriesReply, curre
 	} else {
 		//implement optimization mentioned in the paper
 		tmp := rf.nextIndex[server]
+		if reply.ConflictTermFirstIndex == -1 {
+			//reply to outdated request
+			return
+		}
 		if reply.ConflictEntryTerm == -1 {
 			//follower's log shorter than rf.nextIndex[server]
 			rf.nextIndex[server] = reply.ConflictTermFirstIndex

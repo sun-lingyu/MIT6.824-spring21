@@ -416,6 +416,14 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 		}
 	}
+
+	if args.PrevLogIndex < rf.log.LastIncludedIndex {
+		//outdated AppendEntries
+		//only happen due to unreliable network
+		reply.Success = false
+		return
+	}
+
 	rf.resetTimer() //reset timer
 
 	//lab 2b
@@ -433,7 +441,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 		reply.ConflictEntryTerm = rf.log.index(args.PrevLogIndex).Term
 		conflictTermFirstIndex := args.PrevLogIndex
-		for conflictTermFirstIndex >= 1 && rf.log.index(conflictTermFirstIndex).Term == reply.ConflictEntryTerm {
+		for conflictTermFirstIndex >= rf.log.LastIncludedIndex && rf.log.index(conflictTermFirstIndex).Term == reply.ConflictEntryTerm {
 			conflictTermFirstIndex--
 		}
 		reply.ConflictTermFirstIndex = conflictTermFirstIndex + 1
@@ -679,9 +687,6 @@ func (rf *Raft) killed() bool {
 func (rf *Raft) ticker() {
 	//fmt.Printf("ticker %d start\n", rf.me)
 	//ticker never exit.
-	rf.timerLock.Lock()
-	rf.timer = time.NewTimer(time.Duration(rand.Int())%electionTimeoutInterval + electionTimeoutStart)
-	rf.timerLock.Unlock()
 	for rf.killed() == false {
 		// Your code here to check if a leader election should
 		// be started and to randomize sleeping time using
@@ -768,9 +773,13 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	rand.Seed(int64(rf.me))
 	// start ticker goroutine to start elections
-	DPrintf("server %d started----------------\n", rf.me)
+	rf.timerLock.Lock()
+	rf.timer = time.NewTimer(time.Duration(rand.Int())%electionTimeoutInterval + electionTimeoutStart)
+	rf.timerLock.Unlock()
 	go rf.ticker()
+	//start the applier to send messages to applyCh
 	go rf.applier()
+	DPrintf("server %d started----------------\n", rf.me)
 
 	return rf
 }
