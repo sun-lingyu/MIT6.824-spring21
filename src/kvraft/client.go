@@ -1,13 +1,19 @@
 package kvraft
 
-import "6.824/labrpc"
-import "crypto/rand"
-import "math/big"
+import (
+	"crypto/rand"
+	"fmt"
+	"math/big"
+	"sync"
 
+	"6.824/labrpc"
+)
 
 type Clerk struct {
 	servers []*labrpc.ClientEnd
 	// You will have to modify this struct.
+	mu         sync.Mutex
+	lastServer int
 }
 
 func nrand() int64 {
@@ -38,8 +44,25 @@ func MakeClerk(servers []*labrpc.ClientEnd) *Clerk {
 //
 func (ck *Clerk) Get(key string) string {
 
+	args := GetArgs{key}
+	reply := GetReply{}
+
 	// You will have to modify this function.
-	return ""
+	for i := 0; i < len(ck.servers); i++ {
+		ok := false
+		for !ok {
+			ok = ck.servers[(i+ck.lastServer)%len(ck.servers)].Call("KVServer.Get", &args, &reply)
+		}
+		switch reply.Err {
+		case OK:
+			return reply.Value
+		case ErrNoKey:
+			return ""
+		case ErrWrongLeader:
+			continue
+		}
+	}
+	panic("clerk get: traversed all servers but no one available.")
 }
 
 //
@@ -54,6 +77,25 @@ func (ck *Clerk) Get(key string) string {
 //
 func (ck *Clerk) PutAppend(key string, value string, op string) {
 	// You will have to modify this function.
+	args := PutAppendArgs{key, value, op}
+	reply := PutAppendReply{}
+
+	for i := 0; i < len(ck.servers); i++ {
+		ok := false
+		for !ok {
+			ok = ck.servers[(i+ck.lastServer)%len(ck.servers)].Call("KVServer.PutAppend", &args, &reply)
+		}
+		switch reply.Err {
+		case OK:
+			return
+		case ErrNoKey:
+			fmt.Printf("PutAppend: no key\n")
+			return
+		case ErrWrongLeader:
+			continue
+		}
+	}
+	panic("clerk get: traversed all servers but no one available.")
 }
 
 func (ck *Clerk) Put(key string, value string) {
