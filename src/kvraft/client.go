@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"sync"
+	"time"
 
 	"6.824/labrpc"
 )
@@ -14,6 +15,7 @@ type Clerk struct {
 	// You will have to modify this struct.
 	mu         sync.Mutex
 	lastServer int
+	version    int64
 }
 
 func nrand() int64 {
@@ -45,24 +47,33 @@ func MakeClerk(servers []*labrpc.ClientEnd) *Clerk {
 func (ck *Clerk) Get(key string) string {
 
 	args := GetArgs{key}
-	reply := GetReply{}
 
 	// You will have to modify this function.
-	for i := 0; i < len(ck.servers); i++ {
+	for i := 0; ; i++ {
 		ok := false
+		reply := GetReply{}
 		for !ok {
+			DPrintf("sending GET RPC to %d\n", (i+ck.lastServer)%len(ck.servers))
 			ok = ck.servers[(i+ck.lastServer)%len(ck.servers)].Call("KVServer.Get", &args, &reply)
 		}
 		switch reply.Err {
 		case OK:
+			ck.lastServer = (i + ck.lastServer) % len(ck.servers)
+			fmt.Printf("finish GET\n")
 			return reply.Value
 		case ErrNoKey:
+			fmt.Printf("GET: no key\n")
+			ck.lastServer = (i + ck.lastServer) % len(ck.servers)
 			return ""
 		case ErrWrongLeader:
+			if i%len(ck.servers) == 0 {
+				DPrintf("clerk get: traversed all servers but no one available.\n")
+				time.Sleep(100 * time.Millisecond)
+			}
 			continue
 		}
+
 	}
-	panic("clerk get: traversed all servers but no one available.")
 }
 
 //
@@ -77,25 +88,37 @@ func (ck *Clerk) Get(key string) string {
 //
 func (ck *Clerk) PutAppend(key string, value string, op string) {
 	// You will have to modify this function.
-	args := PutAppendArgs{key, value, op}
-	reply := PutAppendReply{}
+	args := PutAppendArgs{key, value, op, ck.version}
+	ck.version++
 
-	for i := 0; i < len(ck.servers); i++ {
+	for i := 0; ; i++ {
 		ok := false
+		reply := PutAppendReply{}
 		for !ok {
+			DPrintf("sending PutAppend RPC to %d\n", (i+ck.lastServer)%len(ck.servers))
 			ok = ck.servers[(i+ck.lastServer)%len(ck.servers)].Call("KVServer.PutAppend", &args, &reply)
 		}
 		switch reply.Err {
 		case OK:
+			ck.lastServer = (i + ck.lastServer) % len(ck.servers)
+			DPrintf("set ck.lastServer to %d", ck.lastServer)
+			fmt.Printf("finish PUTAPPEND\n")
 			return
 		case ErrNoKey:
+			ck.lastServer = (i + ck.lastServer) % len(ck.servers)
 			fmt.Printf("PutAppend: no key\n")
+			DPrintf("set ck.lastServer to %d", ck.lastServer)
 			return
 		case ErrWrongLeader:
+			if i%len(ck.servers) == 0 {
+				DPrintf("clerk put: traversed all servers but no one available.\n")
+				//time.Sleep(100 * time.Millisecond)
+			}
 			continue
 		}
+
 	}
-	panic("clerk get: traversed all servers but no one available.")
+
 }
 
 func (ck *Clerk) Put(key string, value string) {

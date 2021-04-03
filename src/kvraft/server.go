@@ -1,6 +1,7 @@
 package kvraft
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"sync/atomic"
@@ -10,11 +11,7 @@ import (
 	"6.824/raft"
 )
 
-type Optype int
-
-const Debug = false
-const get Optype = 0
-const putAppend Optype = 1
+const Debug = true
 
 func DPrintf(format string, a ...interface{}) (n int, err error) {
 	if Debug {
@@ -27,7 +24,7 @@ type Op struct {
 	// Your definitions here.
 	// Field names must start with capital letters,
 	// otherwise RPC will break.
-	Type  Optype
+	Type  string
 	Key   string
 	Value string
 }
@@ -42,17 +39,67 @@ type KVServer struct {
 	maxraftstate int // snapshot if log grows this big
 
 	// Your definitions here.
-	kvMap map[string]string
+	kvMap           map[string]string
+	pendingChannels map[int]chan raft.ApplyMsg //only valid when it is leader
+	version         int64
 }
 
 func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 	// Your code here.
 	kv.mu.Lock()
-
+	defer kv.mu.Unlock()
+	_, isLeader := kv.rf.GetState()
+	if !isLeader {
+		reply.Err = ErrWrongLeader
+		return
+	}
+	elem, ok := kv.kvMap[args.Key]
+	if ok {
+		reply.Err = OK
+		reply.Value = elem
+	} else {
+		reply.Err = ErrNoKey
+	}
 }
 
 func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	// Your code here.
+	kv.mu.Lock()
+	defer kv.mu.Unlock()
+	newCmd := Op{args.Op, args.Key, args.Value}
+	index, _, isLeader := kv.rf.Start(newCmd)
+	if !isLeader {
+		DPrintf("%d Not leader\n", kv.me)
+		reply.Err = ErrWrongLeader
+		return
+	}
+
+	elem := kv.kvMap[args.Key]
+	kv.pendingChannels[index] = make(chan raft.ApplyMsg)
+	ch := kv.pendingChannels[index]
+	kv.mu.Unlock()
+	DPrintf("Find %d leader\n", kv.me)
+	msg := <-ch
+	kv.mu.Lock()
+	cmd := msg.Command.(Op)
+
+	if cmd != newCmd {
+		reply.Err = ErrWrongLeader
+	} else {
+		reply.Err = OK
+	}
+
+	//update regardless of leadership.
+	switch cmd.Type {
+	case "Append":
+		kv.kvMap[cmd.Key] = elem + cmd.Value
+	case "Put":
+		kv.kvMap[cmd.Key] = cmd.Value
+	default:
+		panic(fmt.Sprintf("Putappend: wrong cmd.Type: %s!\n", cmd.Type))
+	}
+	DPrintf("finish processing putappend\n")
+
 }
 
 //
@@ -74,6 +121,40 @@ func (kv *KVServer) Kill() {
 func (kv *KVServer) killed() bool {
 	z := atomic.LoadInt32(&kv.dead)
 	return z == 1
+}
+
+func (kv *KVServer) applyListener() {
+	for !kv.killed() {
+		DPrintf("listening\n")
+		msg := <-kv.applyCh
+
+		DPrintf("get reply\n")
+		if msg.CommandValid {
+			kv.mu.Lock()
+			ch, ok := kv.pendingChannels[msg.CommandIndex]
+			if ok {
+				//some handlers are pending
+				ch <- msg
+			} else {
+				//no handler pending.
+				cmd := msg.Command.(Op)
+				elem := kv.kvMap[cmd.Key]
+				switch cmd.Type {
+				case "Append":
+					kv.kvMap[cmd.Key] = elem + cmd.Value
+				case "Put":
+					kv.kvMap[cmd.Key] = cmd.Value
+				default:
+					panic(fmt.Sprintf("applyListener: wrong cmd.Type: %s!\n", cmd.Type))
+				}
+			}
+			kv.mu.Unlock()
+		} else {
+			//TODO
+			//snapshot
+		}
+
+	}
 }
 
 //
@@ -106,6 +187,9 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 
 	// You may need initialization code here.
 	kv.kvMap = make(map[string]string)
+	kv.pendingChannels = make(map[int]chan raft.ApplyMsg)
+
+	go kv.applyListener()
 
 	return kv
 }
