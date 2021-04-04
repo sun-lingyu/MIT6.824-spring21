@@ -24,9 +24,11 @@ type Op struct {
 	// Your definitions here.
 	// Field names must start with capital letters,
 	// otherwise RPC will break.
-	Type  string
-	Key   string
-	Value string
+	Type    string
+	Key     string
+	Value   string
+	Version int64
+	ID      int
 }
 
 type KVServer struct {
@@ -40,8 +42,8 @@ type KVServer struct {
 
 	// Your definitions here.
 	kvMap           map[string]string
-	pendingChannels map[int]chan raft.ApplyMsg //only valid when it is leader
-	version         int64
+	pendingChannels map[int]chan raft.ApplyMsg //map from log index to channel. only valid when it is leader
+	dupMap          map[int]int64              //map from client to version
 }
 
 func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
@@ -53,6 +55,7 @@ func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 		reply.Err = ErrWrongLeader
 		return
 	}
+
 	elem, ok := kv.kvMap[args.Key]
 	if ok {
 		reply.Err = OK
@@ -66,21 +69,36 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	// Your code here.
 	kv.mu.Lock()
 	defer kv.mu.Unlock()
-	newCmd := Op{args.Op, args.Key, args.Value}
-	index, _, isLeader := kv.rf.Start(newCmd)
+
+	_, isLeader := kv.rf.GetState()
 	if !isLeader {
 		DPrintf("%d Not leader\n", kv.me)
 		reply.Err = ErrWrongLeader
 		return
 	}
+	_, ok := kv.dupMap[args.ID]
+	if !ok {
+		//new client
+		//initialize
+		kv.dupMap[args.ID] = -1
+	}
+	if args.Version <= kv.dupMap[args.ID] {
+		//already processed.
+		reply.Err = OK
+		return
+	}
 
-	elem := kv.kvMap[args.Key]
+	newCmd := Op{args.Op, args.Key, args.Value, args.Version, args.ID}
+	index, _, _ := kv.rf.Start(newCmd)
+
 	kv.pendingChannels[index] = make(chan raft.ApplyMsg)
 	ch := kv.pendingChannels[index]
 	kv.mu.Unlock()
+
 	DPrintf("Find %d leader\n", kv.me)
 	msg := <-ch
 	kv.mu.Lock()
+
 	cmd := msg.Command.(Op)
 
 	if cmd != newCmd {
@@ -88,17 +106,23 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	} else {
 		reply.Err = OK
 	}
+	if cmd.Version <= kv.dupMap[cmd.ID] {
+		//already processed.
+		fmt.Printf("here\n")
+		return
+	}
+	kv.dupMap[cmd.ID] = cmd.Version
 
 	//update regardless of leadership.
 	switch cmd.Type {
 	case "Append":
-		kv.kvMap[cmd.Key] = elem + cmd.Value
+		kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
 	case "Put":
 		kv.kvMap[cmd.Key] = cmd.Value
 	default:
 		panic(fmt.Sprintf("Putappend: wrong cmd.Type: %s!\n", cmd.Type))
 	}
-	DPrintf("finish processing putappend\n")
+	DPrintf("finish processing putappend: %v\n", cmd.Value)
 
 }
 
@@ -138,15 +162,28 @@ func (kv *KVServer) applyListener() {
 			} else {
 				//no handler pending.
 				cmd := msg.Command.(Op)
-				elem := kv.kvMap[cmd.Key]
+				_, ok := kv.dupMap[cmd.ID]
+				if !ok {
+					//new client
+					//initialize
+					kv.dupMap[cmd.ID] = -1
+				}
+				if cmd.Version <= kv.dupMap[cmd.ID] {
+					//already processed.
+					fmt.Printf("duplicate detected\n")
+					kv.mu.Unlock()
+					continue
+				}
+				kv.dupMap[cmd.ID] = cmd.Version
 				switch cmd.Type {
 				case "Append":
-					kv.kvMap[cmd.Key] = elem + cmd.Value
+					kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
 				case "Put":
 					kv.kvMap[cmd.Key] = cmd.Value
 				default:
 					panic(fmt.Sprintf("applyListener: wrong cmd.Type: %s!\n", cmd.Type))
 				}
+
 			}
 			kv.mu.Unlock()
 		} else {
@@ -188,6 +225,7 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 	// You may need initialization code here.
 	kv.kvMap = make(map[string]string)
 	kv.pendingChannels = make(map[int]chan raft.ApplyMsg)
+	kv.dupMap = make(map[int]int64)
 
 	go kv.applyListener()
 

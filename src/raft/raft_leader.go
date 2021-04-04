@@ -147,7 +147,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 						go rf.sender(args, currentTerm, server)
 					}
 					rf.mu.Unlock()
-					time.Sleep(heartbeatInterval / 2) //wait for rf.sender to get reply and process it
+					time.Sleep(heartbeatInterval / 5) //wait for rf.sender to get reply and process it
 					rf.mu.Lock()
 				}
 			}
