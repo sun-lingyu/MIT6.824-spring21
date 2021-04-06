@@ -304,6 +304,7 @@ func GenericTest(t *testing.T, part string, nclients int, nservers int, unreliab
 		atomic.StoreInt32(&done_partitioner, 1) // tell partitioner to quit
 
 		if partitions {
+			fmt.Printf("-----------------------------\n")
 			// log.Printf("wait for partitioner\n")
 			<-ch_partitioner
 			// reconnect network and submit a request. A client may
@@ -311,6 +312,7 @@ func GenericTest(t *testing.T, part string, nclients int, nservers int, unreliab
 			// won't return until that server discovers a new term
 			// has started.
 			cfg.ConnectAll()
+			fmt.Printf("***********************\n")
 			// wait for a while so that we have a new term
 			time.Sleep(electionTimeout)
 		}
@@ -330,6 +332,7 @@ func GenericTest(t *testing.T, part string, nclients int, nservers int, unreliab
 			}
 			cfg.ConnectAll()
 		}
+		fmt.Printf("before loop\n")
 
 		// log.Printf("wait for clients\n")
 		for i := 0; i < nclients; i++ {
@@ -339,8 +342,10 @@ func GenericTest(t *testing.T, part string, nclients int, nservers int, unreliab
 			// 	log.Printf("Warning: client %d managed to perform only %d put operations in 1 sec?\n", i, j)
 			// }
 			key := strconv.Itoa(i)
+			fmt.Printf("before get\n")
 			// log.Printf("Check %v for client %d\n", j, i)
 			v := Get(cfg, ck, key, opLog, 0)
+			fmt.Printf("after get\n")
 			if !randomkeys {
 				checkClntAppends(t, i, v, j)
 			}
@@ -419,6 +424,7 @@ func GenericTestSpeed(t *testing.T, part string, maxraftstate int) {
 	cfg.end()
 }
 
+/*
 func TestBasic3A(t *testing.T) {
 	// Test: one client (3A) ...
 	GenericTest(t, "3A", 1, 5, false, false, false, -1, false)
@@ -546,7 +552,7 @@ func TestOnePartition3A(t *testing.T) {
 	check(cfg, t, ck, "1", "15")
 
 	cfg.end()
-}
+}*/
 
 func TestManyPartitionsOneClient3A(t *testing.T) {
 	// Test: partitions, one client (3A) ...

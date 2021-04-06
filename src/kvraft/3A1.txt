@@ -1,0 +1,3123 @@
+2021/04/06 09:22:52 0 listening
+2021/04/06 09:22:52 1 listening
+2021/04/06 09:22:52 2 listening
+2021/04/06 09:22:52 3 listening
+Test: partitions, one client (3A) ...
+2021/04/06 09:22:52 4 listening
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 0
+2021/04/06 09:22:52 3 Not leader
+2021/04/06 09:22:52 clerk put: traversed all servers but no one available.
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:52 2 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 2
+2021/04/06 09:22:52 4 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 3
+2021/04/06 09:22:52 0 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 4
+2021/04/06 09:22:52 1 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 0
+2021/04/06 09:22:52 3 Not leader
+2021/04/06 09:22:52 clerk put: traversed all servers but no one available.
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:52 2 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 2
+2021/04/06 09:22:52 4 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 3
+2021/04/06 09:22:52 0 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 4
+2021/04/06 09:22:52 1 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 0
+2021/04/06 09:22:52 3 Not leader
+2021/04/06 09:22:52 clerk put: traversed all servers but no one available.
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:52 2 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 2
+2021/04/06 09:22:52 4 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 3
+2021/04/06 09:22:52 0 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 4
+2021/04/06 09:22:52 1 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 0
+2021/04/06 09:22:52 3 Not leader
+2021/04/06 09:22:52 clerk put: traversed all servers but no one available.
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:52 2 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 2
+2021/04/06 09:22:52 4 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 3
+2021/04/06 09:22:52 0 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 4
+2021/04/06 09:22:52 1 Not leader
+2021/04/06 09:22:52 client 1 sending PutAppend RPC to 0
+2021/04/06 09:22:52 3 Not leader
+2021/04/06 09:22:52 clerk put: traversed all servers but no one available.
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: 
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 finish processing putappend: x 0 0 y
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 1 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 3 get reply
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 2 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 3 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 1 listening
+count:3
+yes
+count:4
+2021/04/06 09:22:53 2 get reply
+no
+here!!!!!!!!!
+here!!!!!!!!!
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+2021/04/06 09:22:53 3 get reply
+here!!!!!!!!!
+process silently
+2021/04/06 09:22:53 3 listening
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 4 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 5 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 6 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 7 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 8 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 9 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:5
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+count:4
+2021/04/06 09:22:53 2 get reply
+no
+here!!!!!!!!!
+broadcast
+2021/04/06 09:22:53 2 listening
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 10 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+count:4
+no
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 11 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 12 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:5
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+2021/04/06 09:22:53 Find 2 leader
+here!!!!!!!!!
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 13 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 14 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:4
+2021/04/06 09:22:53 0 get reply
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 15 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 16 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 17 y
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 18 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+2021/04/06 09:22:53 4 get reply
+here!!!!!!!!!
+process silently
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 19 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 20 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 21 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 22 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 23 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 Find 2 leader
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 24 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 25 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:5
+2021/04/06 09:22:53 1 listening
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:5
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 26 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 27 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 28 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 29 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 30 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 3 get reply
+process silently
+2021/04/06 09:22:53 3 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+count:5
+2021/04/06 09:22:53 3 get reply
+2021/04/06 09:22:53 Find 2 leader
+no
+here!!!!!!!!!
+process silently
+2021/04/06 09:22:53 3 listening
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 31 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 32 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 33 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 34 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 35 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 36 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+2021/04/06 09:22:53 finish GET
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 37 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 38 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 39 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 40 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 41 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 42 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 43 y
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+count:4
+2021/04/06 09:22:53 4 listening
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 44 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 45 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 46 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 47 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 48 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 49 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 50 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 51 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+broadcast
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 sending GET RPC to 1
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:53 2 get reply
+count:4
+broadcast
+2021/04/06 09:22:53 2 listening
+no
+here!!!!!!!!!
+2021/04/06 09:22:53 finish GET
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 52 y
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 0 get reply
+process silently
+2021/04/06 09:22:53 0 listening
+2021/04/06 09:22:53 2 get reply
+send to ch
+2021/04/06 09:22:53 2 listening
+2021/04/06 09:22:53 finish processing putappend: x 0 53 y
+2021/04/06 09:22:53 set ck.lastServer to 1
+2021/04/06 09:22:53 finish PUTAPPEND
+2021/04/06 09:22:53 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:53 Find 2 leader
+2021/04/06 09:22:53 4 get reply
+process silently
+2021/04/06 09:22:53 4 listening
+2021/04/06 09:22:53 1 get reply
+process silently
+2021/04/06 09:22:53 1 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 54 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:2
+no
+count:3
+yes
+here!!!!!!!!!
+count:4
+no
+2021/04/06 09:22:54 2 get reply
+here!!!!!!!!!
+here!!!!!!!!!
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+count:4
+no
+here!!!!!!!!!
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 55 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 56 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 57 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 58 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 59 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 1 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 60 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 61 y
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 62 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 63 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 64 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 65 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 66 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 67 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 68 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 69 y
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 70 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:3
+2021/04/06 09:22:54 1 get reply
+yes
+process silently
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 71 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 72 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+2021/04/06 09:22:54 2 get reply
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+here!!!!!!!!!
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 73 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 74 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 75 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+count:4
+2021/04/06 09:22:54 1 get reply
+no
+process silently
+2021/04/06 09:22:54 1 listening
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 76 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 77 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 78 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 79 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 80 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 81 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 82 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+2021/04/06 09:22:54 1 get reply
+process silently
+2021/04/06 09:22:54 1 listening
+count:2
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+2021/04/06 09:22:54 0 get reply
+process silently
+2021/04/06 09:22:54 0 listening
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 sending GET RPC to 1
+count:4
+no
+here!!!!!!!!!
+count:2
+no
+here!!!!!!!!!
+count:3
+yes
+here!!!!!!!!!
+2021/04/06 09:22:54 2 get reply
+broadcast
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish GET
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+count:4
+no
+here!!!!!!!!!
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 2 get reply
+send to ch
+2021/04/06 09:22:54 2 listening
+2021/04/06 09:22:54 finish processing putappend: x 0 83 y
+2021/04/06 09:22:54 set ck.lastServer to 1
+2021/04/06 09:22:54 finish PUTAPPEND
+2021/04/06 09:22:54 client 1 sending PutAppend RPC to 1
+2021/04/06 09:22:54 Find 2 leader
+2021/04/06 09:22:54 4 get reply
+process silently
+2021/04/06 09:22:54 4 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:55 3 get reply
+process silently
+2021/04/06 09:22:55 3 listening
+2021/04/06 09:22:56 1 get reply
+process silently
+2021/04/06 09:22:56 1 listening
+2021/04/06 09:22:56 0 get reply
+process silently
+2021/04/06 09:22:56 0 listening
+-----------------------------
+***********************
+before loop
+panic: test timed out after 10m0s
+
+goroutine 71899 [running]:
+testing.(*M).startAlarm.func1()
+	/usr/lib/go-1.13/src/testing/testing.go:1377 +0x11c
+created by time.goFunc
+	/usr/lib/go-1.13/src/time/sleep.go:168 +0x52
+
+goroutine 1 [chan receive, 9 minutes]:
+testing.(*T).Run(0xc0000ea000, 0x7109ec, 0x1d, 0x71e3f0, 0x0)
+	/usr/lib/go-1.13/src/testing/testing.go:961 +0x68a
+testing.runTests.func1(0xc0000ea000)
+	/usr/lib/go-1.13/src/testing/testing.go:1202 +0xa7
+testing.tRunner(0xc0000ea000, 0xc0000a9d40)
+	/usr/lib/go-1.13/src/testing/testing.go:909 +0x19a
+testing.runTests(0xc0000b2740, 0x8e9420, 0x11, 0x11, 0x0)
+	/usr/lib/go-1.13/src/testing/testing.go:1200 +0x522
+testing.(*M).Run(0xc0000da000, 0x0)
+	/usr/lib/go-1.13/src/testing/testing.go:1117 +0x300
+main.main()
+	_testmain.go:76 +0x224
+
+goroutine 20 [chan receive, 9 minutes]:
+6.824/kvraft.GenericTest(0xc0000ea100, 0x70aa80, 0x2, 0x1, 0x5, 0x10000, 0xffffffffffffffff, 0xc000038f00)
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:340 +0x5dc
+6.824/kvraft.TestManyPartitionsOneClient3A(0xc0000ea100)
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:559 +0x7a
+testing.tRunner(0xc0000ea100, 0x71e3f0)
+	/usr/lib/go-1.13/src/testing/testing.go:909 +0x19a
+created by testing.(*T).Run
+	/usr/lib/go-1.13/src/testing/testing.go:960 +0x652
+
+goroutine 21 [select]:
+6.824/labrpc.MakeNetwork.func1(0xc0000d6140)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:153 +0x229
+created by 6.824/labrpc.MakeNetwork
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:151 +0x276
+
+goroutine 22 [chan receive, 9 minutes]:
+6.824/raft.(*Raft).ticker(0xc0000ce2c0)
+	/home/sunlingyu/6.824/src/raft/raft.go:697 +0x15c
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:779 +0x570
+
+goroutine 23 [sync.Cond.Wait, 9 minutes]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc0000839d0, 0xc000000050)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc0000839c0)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).applier(0xc0000ce2c0)
+	/home/sunlingyu/6.824/src/raft/raft.go:730 +0x120
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:781 +0x592
+
+goroutine 24 [chan receive, 9 minutes]:
+6.824/kvraft.(*KVServer).applyListener(0xc0000d61e0)
+	/home/sunlingyu/6.824/src/kvraft/server.go:156 +0x14f
+created by 6.824/kvraft.StartKVServer
+	/home/sunlingyu/6.824/src/kvraft/server.go:239 +0x37d
+
+goroutine 25 [chan receive, 9 minutes]:
+6.824/raft.(*Raft).ticker(0xc0000ce420)
+	/home/sunlingyu/6.824/src/raft/raft.go:697 +0x15c
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:779 +0x570
+
+goroutine 26 [sync.Cond.Wait, 9 minutes]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083bd0, 0xc000000050)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083bc0)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).applier(0xc0000ce420)
+	/home/sunlingyu/6.824/src/raft/raft.go:730 +0x120
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:781 +0x592
+
+goroutine 27 [chan receive, 9 minutes]:
+6.824/kvraft.(*KVServer).applyListener(0xc0000d62d0)
+	/home/sunlingyu/6.824/src/kvraft/server.go:156 +0x14f
+created by 6.824/kvraft.StartKVServer
+	/home/sunlingyu/6.824/src/kvraft/server.go:239 +0x37d
+
+goroutine 28 [runnable]:
+sync.(*Mutex).Lock(0xc0000ce648)
+	/usr/lib/go-1.13/src/sync/mutex.go:72 +0x91
+6.824/raft.(*Raft).ticker(0xc0000ce580)
+	/home/sunlingyu/6.824/src/raft/raft.go:708 +0x70
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:779 +0x570
+
+goroutine 29 [sync.Cond.Wait, 9 minutes]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083dd0, 0xc000000055)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083dc0)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).applier(0xc0000ce580)
+	/home/sunlingyu/6.824/src/raft/raft.go:730 +0x120
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:781 +0x592
+
+goroutine 30 [chan receive, 9 minutes]:
+6.824/kvraft.(*KVServer).applyListener(0xc0000d63c0)
+	/home/sunlingyu/6.824/src/kvraft/server.go:156 +0x14f
+created by 6.824/kvraft.StartKVServer
+	/home/sunlingyu/6.824/src/kvraft/server.go:239 +0x37d
+
+goroutine 31 [chan receive, 9 minutes]:
+6.824/raft.(*Raft).ticker(0xc0000ce6e0)
+	/home/sunlingyu/6.824/src/raft/raft.go:697 +0x15c
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:779 +0x570
+
+goroutine 32 [sync.Cond.Wait, 9 minutes]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083fd0, 0xc00000001e)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083fc0)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).applier(0xc0000ce6e0)
+	/home/sunlingyu/6.824/src/raft/raft.go:730 +0x120
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:781 +0x592
+
+goroutine 33 [chan receive, 9 minutes]:
+6.824/kvraft.(*KVServer).applyListener(0xc0000d64b0)
+	/home/sunlingyu/6.824/src/kvraft/server.go:156 +0x14f
+created by 6.824/kvraft.StartKVServer
+	/home/sunlingyu/6.824/src/kvraft/server.go:239 +0x37d
+
+goroutine 34 [chan receive, 9 minutes]:
+6.824/raft.(*Raft).ticker(0xc0000ce840)
+	/home/sunlingyu/6.824/src/raft/raft.go:697 +0x15c
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:779 +0x570
+
+goroutine 35 [sync.Cond.Wait, 9 minutes]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000138210, 0xc00000004f)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000138200)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).applier(0xc0000ce840)
+	/home/sunlingyu/6.824/src/raft/raft.go:730 +0x120
+created by 6.824/raft.Make
+	/home/sunlingyu/6.824/src/raft/raft.go:781 +0x592
+
+goroutine 36 [chan receive, 9 minutes]:
+6.824/kvraft.(*KVServer).applyListener(0xc0000d65a0)
+	/home/sunlingyu/6.824/src/kvraft/server.go:156 +0x14f
+created by 6.824/kvraft.StartKVServer
+	/home/sunlingyu/6.824/src/kvraft/server.go:239 +0x37d
+
+goroutine 37 [chan receive, 9 minutes]:
+6.824/kvraft.spawn_clients_and_wait(0xc0000ea100, 0xc0000f2000, 0x1, 0xc0000d6690)
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:120 +0x1d1
+created by 6.824/kvraft.GenericTest
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:256 +0x9bc
+
+goroutine 38 [chan receive, 9 minutes]:
+6.824/labrpc.(*ClientEnd).Call(0xc0000b3100, 0x70d977, 0x12, 0x6aa200, 0xc000386a40, 0x6aa240, 0xc000462000, 0xc00013e480)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:112 +0x3b1
+6.824/kvraft.(*Clerk).PutAppend(0xc0001383c0, 0x712be8, 0x1, 0xc0002e88b0, 0x8, 0x70b004, 0x6)
+	/home/sunlingyu/6.824/src/kvraft/client.go:106 +0x47a
+6.824/kvraft.(*Clerk).Append(...)
+	/home/sunlingyu/6.824/src/kvraft/client.go:139
+6.824/kvraft.Append(0xc0000f2000, 0xc0001383c0, 0x712be8, 0x1, 0xc0002e88b0, 0x8, 0xc0000b3000, 0x0)
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:80 +0x113
+6.824/kvraft.GenericTest.func1(0x0, 0xc0001383c0, 0xc0000ea100)
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:275 +0x633
+6.824/kvraft.run_client(0xc0000ea100, 0xc0000f2000, 0x0, 0xc0000867e0, 0xc0000d6690)
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:106 +0xcf
+created by 6.824/kvraft.spawn_clients_and_wait
+	/home/sunlingyu/6.824/src/kvraft/test_test.go:116 +0xc1
+
+goroutine 3159 [sync.Cond.Wait]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083d90, 0x5812)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083d80)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).leaderProcess.func1(0xc0000ce580, 0xc, 0x2, 0x56, 0x1, 0x908a40, 0x0, 0x0, 0x55, 0xc, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:130 +0x356
+created by 6.824/raft.(*Raft).leaderProcess
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:104 +0x3fa
+
+goroutine 2359 [select]:
+6.824/labrpc.(*Network).processReq(0xc0000d6140, 0x6ba0c0, 0xc000091fa0, 0x70d977, 0x12, 0x765320, 0x6aa200, 0xc0001a20b0, 0x66, 0xae, ...)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:251 +0x2d9
+created by 6.824/labrpc.MakeNetwork.func1
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:157 +0x112
+
+goroutine 71879 [runnable]:
+6.824/raft.(*Raft).candidate(0xc0000ce580)
+	/home/sunlingyu/6.824/src/raft/raft_candidate.go:47
+created by 6.824/raft.(*Raft).ticker
+	/home/sunlingyu/6.824/src/raft/raft.go:706 +0x56
+
+goroutine 3157 [sync.Cond.Wait]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083d90, 0x5814)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083d80)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).leaderProcess.func1(0xc0000ce580, 0xc, 0x2, 0x56, 0x1, 0x908a40, 0x0, 0x0, 0x55, 0xc, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:130 +0x356
+created by 6.824/raft.(*Raft).leaderProcess
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:104 +0x3fa
+
+goroutine 3158 [sync.Cond.Wait]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083d90, 0x5815)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083d80)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).leaderProcess.func1(0xc0000ce580, 0xc, 0x2, 0x56, 0x1, 0x908a40, 0x0, 0x0, 0x55, 0xc, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:130 +0x356
+created by 6.824/raft.(*Raft).leaderProcess
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:104 +0x3fa
+
+goroutine 3155 [select]:
+6.824/raft.(*Raft).leader.func1(0xc0000d6f00, 0xc0000ce580)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:202 +0x164
+created by 6.824/raft.(*Raft).leader
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:200 +0x2e9
+
+goroutine 3156 [sync.Cond.Wait]:
+runtime.goparkunlock(...)
+	/usr/lib/go-1.13/src/runtime/proc.go:310
+sync.runtime_notifyListWait(0xc000083d90, 0x5813)
+	/usr/lib/go-1.13/src/runtime/sema.go:510 +0xf8
+sync.(*Cond).Wait(0xc000083d80)
+	/usr/lib/go-1.13/src/sync/cond.go:56 +0x8e
+6.824/raft.(*Raft).leaderProcess.func1(0xc0000ce580, 0xc, 0x2, 0x56, 0x1, 0x908a40, 0x0, 0x0, 0x55, 0xc, ...)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:130 +0x356
+created by 6.824/raft.(*Raft).leaderProcess
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:104 +0x3fa
+
+goroutine 2360 [chan receive, 9 minutes]:
+6.824/kvraft.(*KVServer).PutAppend(0xc0000d63c0, 0xc000386d00, 0xc0004621e0)
+	/home/sunlingyu/6.824/src/kvraft/server.go:102 +0x610
+reflect.Value.call(0xc0000a0300, 0xc00009e6d0, 0x13, 0x70ac86, 0x4, 0xc000191b00, 0x3, 0x3, 0x489701, 0xc0004621e0, ...)
+	/usr/lib/go-1.13/src/reflect/value.go:460 +0x62b
+reflect.Value.Call(0xc0000a0300, 0xc00009e6d0, 0x13, 0xc000191b00, 0x3, 0x3, 0xc0001ddb00, 0x6f1360, 0xc0001ddb10)
+	/usr/lib/go-1.13/src/reflect/value.go:321 +0xd4
+6.824/labrpc.(*Service).dispatch(0xc000083e40, 0x70d980, 0x9, 0x6ba0c0, 0xc000091fa0, 0x70d977, 0x12, 0x765320, 0x6aa200, 0xc0001a20b0, ...)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:496 +0x812
+6.824/labrpc.(*Server).dispatch(0xc0000b2da0, 0x6ba0c0, 0xc000091fa0, 0x70d977, 0x12, 0x765320, 0x6aa200, 0xc0001a20b0, 0x66, 0xae, ...)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:420 +0x608
+6.824/labrpc.(*Network).processReq.func1(0xc0000b2da0, 0x6ba0c0, 0xc000091fa0, 0x70d977, 0x12, 0x765320, 0x6aa200, 0xc0001a20b0, 0x66, 0xae, ...)
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:240 +0x94
+created by 6.824/labrpc.(*Network).processReq
+	/home/sunlingyu/6.824/src/labrpc/labrpc.go:239 +0x175
+
+goroutine 2602 [select]:
+6.824/raft.(*Raft).leader.func1(0xc000290370, 0xc0000ce840)
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:202 +0x164
+created by 6.824/raft.(*Raft).leader
+	/home/sunlingyu/6.824/src/raft/raft_leader.go:200 +0x2e9
+exit status 2
+FAIL	6.824/kvraft	600.033s

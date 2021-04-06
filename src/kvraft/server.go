@@ -44,6 +44,7 @@ type KVServer struct {
 	kvMap           map[string]string
 	pendingChannels map[int]chan raft.ApplyMsg //map from log index to channel. only valid when it is leader
 	dupMap          map[int]int64              //map from client to version
+	majorityCond    *sync.Cond
 }
 
 func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
@@ -55,6 +56,8 @@ func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 		reply.Err = ErrWrongLeader
 		return
 	}
+	go kv.rf.EnsureMajority()
+	kv.majorityCond.Wait()
 
 	elem, ok := kv.kvMap[args.Key]
 	if ok {
@@ -149,17 +152,19 @@ func (kv *KVServer) killed() bool {
 
 func (kv *KVServer) applyListener() {
 	for !kv.killed() {
-		DPrintf("listening\n")
+		DPrintf("%d listening\n", kv.me)
 		msg := <-kv.applyCh
 
-		DPrintf("get reply\n")
+		DPrintf("%d get reply\n", kv.me)
 		if msg.CommandValid {
 			kv.mu.Lock()
 			ch, ok := kv.pendingChannels[msg.CommandIndex]
 			if ok {
 				//some handlers are pending
+				fmt.Printf("send to ch\n")
 				ch <- msg
 			} else {
+				fmt.Printf("process silently\n")
 				//no handler pending.
 				cmd := msg.Command.(Op)
 				_, ok := kv.dupMap[cmd.ID]
@@ -186,9 +191,12 @@ func (kv *KVServer) applyListener() {
 
 			}
 			kv.mu.Unlock()
-		} else {
+		} else if msg.SnapshotValid {
 			//TODO
 			//snapshot
+		} else {
+			fmt.Printf("broadcast\n")
+			kv.majorityCond.Broadcast()
 		}
 
 	}
@@ -226,6 +234,7 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 	kv.kvMap = make(map[string]string)
 	kv.pendingChannels = make(map[int]chan raft.ApplyMsg)
 	kv.dupMap = make(map[int]int64)
+	kv.majorityCond = sync.NewCond(&kv.mu)
 
 	go kv.applyListener()
 
