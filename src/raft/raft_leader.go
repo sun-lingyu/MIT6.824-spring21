@@ -183,6 +183,12 @@ func (rf *Raft) checkInstallSnapshotReply(reply InstallSnapshotReply, currentTer
 func (rf *Raft) leader() {
 	DPrintf("leader:%d\n", rf.me)
 
+	//added in lab3A.
+	/*raft选举后假如当前term没有新start的entry，那么之前term遗留下的entry永远不会commit。这样会导致之前的请求一直等待，无法返回。
+
+	所以每次raft选举后，向ApplyCh发送一个消息，提醒server主动start一个新的entry，并且这个entry里面应该有当前server的id，即kv. me。*/
+	go func() { rf.applyCh <- ApplyMsg{} }()
+
 	rf.mu.Lock()
 	rf.state = leader
 	//Volatile state on leaders:

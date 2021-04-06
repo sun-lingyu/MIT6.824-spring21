@@ -70,7 +70,7 @@ func (ck *Clerk) Get(key string) string {
 			DPrintf("finish GET\n")
 			return reply.Value
 		case ErrNoKey:
-			fmt.Printf("GET: no key\n")
+			//fmt.Printf("GET: no key\n")
 			ck.lastServer = (i + ck.lastServer) % len(ck.servers)
 			return ""
 		case ErrWrongLeader:

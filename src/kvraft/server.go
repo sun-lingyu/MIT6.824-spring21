@@ -11,7 +11,7 @@ import (
 	"6.824/raft"
 )
 
-const Debug = true
+const Debug = false
 
 func DPrintf(format string, a ...interface{}) (n int, err error) {
 	if Debug {
@@ -29,6 +29,7 @@ type Op struct {
 	Value   string
 	Version int64
 	ID      int
+	Leader  int //only used for Newleader commands
 }
 
 type KVServer struct {
@@ -42,43 +43,60 @@ type KVServer struct {
 
 	// Your definitions here.
 	kvMap           map[string]string
-	pendingChannels map[int]chan raft.ApplyMsg //map from log index to channel. only valid when it is leader
-	dupMap          map[int]int64              //map from client to version
-	majorityCond    *sync.Cond
+	pendingChannels map[int]chan handlerReply //map from log index to channel. only valid when it is leader
+	pendingMap      map[int]Op                //map from log index to cmd
+	dupMap          map[int]int64             //map from client to version
+}
+
+type handlerReply struct { //message between applyListener and RPC Handlers.
+	err   Err
+	value string //for Get.
 }
 
 func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 	// Your code here.
 	kv.mu.Lock()
 	defer kv.mu.Unlock()
+	DPrintf("server %d: process Get\n", kv.me)
+
 	_, isLeader := kv.rf.GetState()
 	if !isLeader {
 		reply.Err = ErrWrongLeader
 		return
 	}
-	go kv.rf.EnsureMajority()
-	kv.majorityCond.Wait()
+	DPrintf("Find %d leader\n", kv.me)
 
-	elem, ok := kv.kvMap[args.Key]
-	if ok {
-		reply.Err = OK
-		reply.Value = elem
-	} else {
-		reply.Err = ErrNoKey
-	}
+	newCmd := Op{"Get", args.Key, "invalid", -1, -1, -1}
+	index, _, _ := kv.rf.Start(newCmd)
+
+	kv.pendingChannels[index] = make(chan handlerReply) //used to receive Err message
+	kv.pendingMap[index] = newCmd                       //used to save newCmd, for applyListener() to query.
+	ch := kv.pendingChannels[index]
+	kv.mu.Unlock()
+
+	hreply := <-ch
+	kv.mu.Lock()
+
+	reply.Err = hreply.err
+	reply.Value = hreply.value
+
+	DPrintf("finish processing get: %v, Err=%v\n", reply.Value, reply.Err)
 }
 
 func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	// Your code here.
 	kv.mu.Lock()
 	defer kv.mu.Unlock()
+	DPrintf("server %d: process PutAppend\n", kv.me)
 
 	_, isLeader := kv.rf.GetState()
 	if !isLeader {
-		DPrintf("%d Not leader\n", kv.me)
 		reply.Err = ErrWrongLeader
 		return
 	}
+	DPrintf("Find %d leader\n", kv.me)
+
+	//duplicate detection
 	_, ok := kv.dupMap[args.ID]
 	if !ok {
 		//new client
@@ -91,41 +109,20 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 		return
 	}
 
-	newCmd := Op{args.Op, args.Key, args.Value, args.Version, args.ID}
+	newCmd := Op{args.Op, args.Key, args.Value, args.Version, args.ID, -1}
 	index, _, _ := kv.rf.Start(newCmd)
 
-	kv.pendingChannels[index] = make(chan raft.ApplyMsg)
+	kv.pendingChannels[index] = make(chan handlerReply) //used to receive Err message
+	kv.pendingMap[index] = newCmd                       //used to save newCmd, for applyListener() to query.
 	ch := kv.pendingChannels[index]
 	kv.mu.Unlock()
 
-	DPrintf("Find %d leader\n", kv.me)
-	msg := <-ch
+	hreply := <-ch
 	kv.mu.Lock()
 
-	cmd := msg.Command.(Op)
+	reply.Err = hreply.err
 
-	if cmd != newCmd {
-		reply.Err = ErrWrongLeader
-	} else {
-		reply.Err = OK
-	}
-	if cmd.Version <= kv.dupMap[cmd.ID] {
-		//already processed.
-		fmt.Printf("here\n")
-		return
-	}
-	kv.dupMap[cmd.ID] = cmd.Version
-
-	//update regardless of leadership.
-	switch cmd.Type {
-	case "Append":
-		kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
-	case "Put":
-		kv.kvMap[cmd.Key] = cmd.Value
-	default:
-		panic(fmt.Sprintf("Putappend: wrong cmd.Type: %s!\n", cmd.Type))
-	}
-	DPrintf("finish processing putappend: %v\n", cmd.Value)
+	DPrintf("finish processing putappend: %v, Err=%v\n", newCmd.Value, hreply.err)
 
 }
 
@@ -154,19 +151,30 @@ func (kv *KVServer) applyListener() {
 	for !kv.killed() {
 		DPrintf("%d listening\n", kv.me)
 		msg := <-kv.applyCh
-
 		DPrintf("%d get reply\n", kv.me)
+
 		if msg.CommandValid {
 			kv.mu.Lock()
-			ch, ok := kv.pendingChannels[msg.CommandIndex]
-			if ok {
-				//some handlers are pending
-				fmt.Printf("send to ch\n")
-				ch <- msg
-			} else {
-				fmt.Printf("process silently\n")
-				//no handler pending.
-				cmd := msg.Command.(Op)
+			DPrintf("%d get lock in applyListener\n", kv.me)
+			cmd := msg.Command.(Op)
+
+			if cmd.Type == "Newleader" {
+				if cmd.Leader == kv.me {
+					kv.mu.Unlock()
+					continue
+				}
+				for i, ch := range kv.pendingChannels {
+					//we are not leader anymore.
+					DPrintf("%d not leader anymore!\n", kv.me)
+					ch <- handlerReply{ErrWrongLeader, ""}
+					close(ch)
+					delete(kv.pendingChannels, i)
+					delete(kv.pendingMap, i)
+				}
+			}
+
+			//duplicate detection
+			if cmd.Type != "Get" {
 				_, ok := kv.dupMap[cmd.ID]
 				if !ok {
 					//new client
@@ -175,10 +183,10 @@ func (kv *KVServer) applyListener() {
 				}
 				if cmd.Version <= kv.dupMap[cmd.ID] {
 					//already processed.
-					fmt.Printf("duplicate detected\n")
-					kv.mu.Unlock()
-					continue
+					//fmt.Printf("duplicate detected\n")
+					goto sendHreply
 				}
+				//apply changes
 				kv.dupMap[cmd.ID] = cmd.Version
 				switch cmd.Type {
 				case "Append":
@@ -188,15 +196,62 @@ func (kv *KVServer) applyListener() {
 				default:
 					panic(fmt.Sprintf("applyListener: wrong cmd.Type: %s!\n", cmd.Type))
 				}
+			}
 
+		sendHreply:
+			_, hasKey := kv.pendingChannels[msg.CommandIndex]
+			oldCmd := kv.pendingMap[msg.CommandIndex]
+
+			if hasKey {
+				if cmd != oldCmd {
+					for i, ch := range kv.pendingChannels {
+						//clear all
+						DPrintf("%d send in loop\n", kv.me)
+						ch <- handlerReply{ErrWrongLeader, ""}
+						close(ch)
+						delete(kv.pendingChannels, i)
+						delete(kv.pendingMap, i)
+					}
+
+				} else {
+					DPrintf("%d send out of loop\n", kv.me)
+					var hreply handlerReply
+					if cmd.Type == "Get" {
+						elem, ok := kv.kvMap[cmd.Key]
+						if ok {
+							hreply.err = OK
+							hreply.value = elem
+						} else {
+							hreply.err = ErrNoKey
+						}
+					} else {
+						hreply.err = OK
+					}
+					kv.pendingChannels[msg.CommandIndex] <- hreply
+					close(kv.pendingChannels[msg.CommandIndex])
+					delete(kv.pendingChannels, msg.CommandIndex)
+					delete(kv.pendingMap, msg.CommandIndex)
+				}
+				DPrintf("%d sending finish\n", kv.me)
+			} else { //must exist another leader.
+				for i, ch := range kv.pendingChannels {
+					//clear all
+					DPrintf("%d send in loop1\n", kv.me)
+					ch <- handlerReply{ErrWrongLeader, ""}
+					close(ch)
+					delete(kv.pendingChannels, i)
+					delete(kv.pendingMap, i)
+				}
 			}
 			kv.mu.Unlock()
 		} else if msg.SnapshotValid {
 			//TODO
 			//snapshot
 		} else {
-			fmt.Printf("broadcast\n")
-			kv.majorityCond.Broadcast()
+			kv.mu.Lock()
+			newCmd := Op{"Newleader", "invalid", "invalid", -1, -1, kv.me} //dummy cmd
+			kv.rf.Start(newCmd)
+			kv.mu.Unlock()
 		}
 
 	}
@@ -232,9 +287,9 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 
 	// You may need initialization code here.
 	kv.kvMap = make(map[string]string)
-	kv.pendingChannels = make(map[int]chan raft.ApplyMsg)
+	kv.pendingChannels = make(map[int]chan handlerReply)
+	kv.pendingMap = make(map[int]Op)
 	kv.dupMap = make(map[int]int64)
-	kv.majorityCond = sync.NewCond(&kv.mu)
 
 	go kv.applyListener()
 
