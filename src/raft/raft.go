@@ -730,7 +730,6 @@ func (rf *Raft) applier() {
 			rf.applyCond.Wait()
 		}
 	}
-	close(rf.applyCh)
 }
 
 //
