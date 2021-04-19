@@ -1,6 +1,7 @@
 package kvraft
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"sync"
@@ -46,6 +47,8 @@ type KVServer struct {
 	pendingChannels map[int]chan handlerReply //map from log index to channel. only valid when it is leader
 	pendingMap      map[int]Op                //map from log index to cmd
 	dupMap          map[int]int64             //map from client to version
+
+	persister *raft.Persister
 }
 
 type handlerReply struct { //message between applyListener and RPC Handlers.
@@ -102,6 +105,7 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 		//new client
 		//initialize
 		kv.dupMap[args.ID] = -1
+		kv.persist()
 	}
 	if args.Version <= kv.dupMap[args.ID] {
 		//already processed.
@@ -180,6 +184,7 @@ func (kv *KVServer) applyListener() {
 					//new client
 					//initialize
 					kv.dupMap[cmd.ID] = -1
+					kv.persist()
 				}
 				if cmd.Version <= kv.dupMap[cmd.ID] {
 					//already processed.
@@ -196,6 +201,7 @@ func (kv *KVServer) applyListener() {
 				default:
 					panic(fmt.Sprintf("applyListener: wrong cmd.Type: %s!\n", cmd.Type))
 				}
+				kv.persist()
 			}
 
 		sendHreply:
@@ -254,6 +260,37 @@ func (kv *KVServer) applyListener() {
 			kv.mu.Unlock()
 		}
 
+		//check whether need to snapshot.
+		if kv.persister.RaftStateSize() > kv.maxraftstate {
+
+		}
+
+	}
+}
+
+func (kv *KVServer) persist() {
+	w := new(bytes.Buffer)
+	e := labgob.NewEncoder(w)
+	e.Encode(kv.dupMap)
+	e.Encode(kv.kvMap)
+	data := w.Bytes()
+	kv.persister.SaveKVState(data)
+}
+
+func (kv *KVServer) readPersist(data []byte) {
+	if data == nil || len(data) < 1 {
+		return
+	}
+	r := bytes.NewBuffer(data)
+	d := labgob.NewDecoder(r)
+	var dupMap map[int]int64
+	var kvMap map[string]string
+	if d.Decode(&dupMap) != nil ||
+		d.Decode(&kvMap) != nil {
+		fmt.Printf("server %d readPersist(kv): decode error!", kv.me)
+	} else {
+		kv.dupMap = dupMap
+		kv.kvMap = kvMap
 	}
 }
 
@@ -290,6 +327,10 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 	kv.pendingChannels = make(map[int]chan handlerReply)
 	kv.pendingMap = make(map[int]Op)
 	kv.dupMap = make(map[int]int64)
+
+	kv.persister = persister
+
+	kv.readPersist(persister.ReadKVState())
 
 	go kv.applyListener()
 
