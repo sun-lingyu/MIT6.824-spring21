@@ -69,7 +69,7 @@ func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 	}
 	DPrintf("Find %d leader\n", kv.me)
 
-	newCmd := Op{"Get", args.Key, "invalid", -1, -1, -1}
+	newCmd := Op{"Get", args.Key, "get_invalid", -1, -1, -1}
 	index, _, _ := kv.rf.Start(newCmd)
 
 	kv.pendingChannels[index] = make(chan handlerReply) //used to receive Err message
@@ -105,7 +105,6 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 		//new client
 		//initialize
 		kv.dupMap[args.ID] = -1
-		kv.persist()
 	}
 	if args.Version <= kv.dupMap[args.ID] {
 		//already processed.
@@ -156,9 +155,9 @@ func (kv *KVServer) applyListener() {
 		DPrintf("%d listening\n", kv.me)
 		msg := <-kv.applyCh
 		DPrintf("%d get reply\n", kv.me)
-
+		kv.mu.Lock()
 		if msg.CommandValid {
-			kv.mu.Lock()
+
 			DPrintf("%d get lock in applyListener\n", kv.me)
 			cmd := msg.Command.(Op)
 
@@ -184,7 +183,6 @@ func (kv *KVServer) applyListener() {
 					//new client
 					//initialize
 					kv.dupMap[cmd.ID] = -1
-					kv.persist()
 				}
 				if cmd.Version <= kv.dupMap[cmd.ID] {
 					//already processed.
@@ -201,7 +199,6 @@ func (kv *KVServer) applyListener() {
 				default:
 					panic(fmt.Sprintf("applyListener: wrong cmd.Type: %s!\n", cmd.Type))
 				}
-				kv.persist()
 			}
 
 		sendHreply:
@@ -249,32 +246,35 @@ func (kv *KVServer) applyListener() {
 					delete(kv.pendingMap, i)
 				}
 			}
-			kv.mu.Unlock()
+
+			//check whether need to snapshot.
+			if kv.maxraftstate != -1 && float32(kv.persister.RaftStateSize()) > float32(kv.maxraftstate)*0.95 {
+				//fmt.Printf("server:%d, msg.index: %d, before: %d\n", kv.me, msg.CommandIndex, kv.persister.RaftStateSize())
+				//fmt.Printf("cmd.Value:%v\n", cmd.Value)
+				w := new(bytes.Buffer)
+				e := labgob.NewEncoder(w)
+				e.Encode(kv.dupMap)
+				e.Encode(kv.kvMap)
+				data := w.Bytes()
+				kv.rf.Snapshot(msg.CommandIndex, data)
+				//fmt.Printf("server:%d, msg.index: %d, after: %d\n", kv.me, msg.CommandIndex, kv.persister.RaftStateSize())
+			}
+
 		} else if msg.SnapshotValid {
 			//TODO
 			//snapshot
+			//fmt.Printf("server:%d, SnapshotIndex: %d, condinstall begin\n", kv.me, msg.SnapshotIndex)
+			if kv.rf.CondInstallSnapshot(msg.SnapshotTerm, msg.SnapshotIndex, msg.Snapshot) {
+				kv.readPersist(msg.Snapshot)
+			}
+			//fmt.Printf("server:%d, SnapshotIndex: %d,condinstall finish\n", kv.me, msg.SnapshotIndex)
 		} else {
-			kv.mu.Lock()
-			newCmd := Op{"Newleader", "invalid", "invalid", -1, -1, kv.me} //dummy cmd
+			newCmd := Op{"server:%d, Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
 			kv.rf.Start(newCmd)
-			kv.mu.Unlock()
 		}
-
-		//check whether need to snapshot.
-		if kv.persister.RaftStateSize() > kv.maxraftstate {
-
-		}
+		kv.mu.Unlock()
 
 	}
-}
-
-func (kv *KVServer) persist() {
-	w := new(bytes.Buffer)
-	e := labgob.NewEncoder(w)
-	e.Encode(kv.dupMap)
-	e.Encode(kv.kvMap)
-	data := w.Bytes()
-	kv.persister.SaveKVState(data)
 }
 
 func (kv *KVServer) readPersist(data []byte) {
@@ -330,7 +330,7 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 
 	kv.persister = persister
 
-	kv.readPersist(persister.ReadKVState())
+	kv.readPersist(persister.ReadSnapshot())
 
 	go kv.applyListener()
 
