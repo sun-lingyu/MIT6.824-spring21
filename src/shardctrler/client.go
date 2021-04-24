@@ -4,14 +4,21 @@ package shardctrler
 // Shardctrler clerk.
 //
 
-import "6.824/labrpc"
-import "time"
-import "crypto/rand"
-import "math/big"
+import (
+	"crypto/rand"
+	"math/big"
+	"time"
+
+	"6.824/labrpc"
+)
+
+var ID int = 0
 
 type Clerk struct {
 	servers []*labrpc.ClientEnd
 	// Your data here.
+	version int64
+	ID      int
 }
 
 func nrand() int64 {
@@ -25,6 +32,8 @@ func MakeClerk(servers []*labrpc.ClientEnd) *Clerk {
 	ck := new(Clerk)
 	ck.servers = servers
 	// Your code here.
+	ck.ID = ID
+	ID++
 	return ck
 }
 
