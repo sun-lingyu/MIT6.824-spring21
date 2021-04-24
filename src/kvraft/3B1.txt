@@ -1,20 +1,140 @@
 Test: InstallSnapshot RPC (3B) ...
-  ... Passed --   3.8  3   365   63
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --   4.2  3   437   63
 Test: snapshot size is reasonable (3B) ...
-  ... Passed --  22.0  3  2603  800
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --  21.0  3  2595  800
 Test: ops complete fast enough (3B) ...
-  ... Passed --  29.8  3  3316    0
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --  27.7  3  3309    0
 Test: restarts, snapshots, one client (3B) ...
-  ... Passed --  20.0  5  3106  516
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --  19.8  5  3478  573
 Test: restarts, snapshots, many clients (3B) ...
-  ... Passed --  22.0  5 12342 6186
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --  21.4  5 12452 6166
 Test: unreliable net, snapshots, many clients (3B) ...
-  ... Passed --  16.3  5  5397 1012
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --  16.8  5  5100  950
 Test: unreliable net, restarts, snapshots, many clients (3B) ...
-  ... Passed --  23.0  5  6470 1061
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+  ... Passed --  21.6  5  6294 1057
 Test: unreliable net, restarts, partitions, snapshots, many clients (3B) ...
-  ... Passed --  28.1  5  5531  614
-Test: unreliable net, restarts, partitions, snapshots, random keys, many clients (3B) ...
-  ... Passed --  30.6  7  9779 1120
-PASS
-ok  	6.824/kvraft	196.720s
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+New leader!!!!!!!!!!!!!!!!!!!!!!!
+signal: interrupt
+FAIL	6.824/kvraft	396.887s

@@ -174,6 +174,8 @@ func (kv *KVServer) applyListener() {
 					delete(kv.pendingChannels, i)
 					delete(kv.pendingMap, i)
 				}
+				kv.mu.Unlock()
+				continue
 			}
 
 			//duplicate detection
@@ -269,7 +271,7 @@ func (kv *KVServer) applyListener() {
 			}
 			//fmt.Printf("server:%d, SnapshotIndex: %d,condinstall finish\n", kv.me, msg.SnapshotIndex)
 		} else {
-			newCmd := Op{"server:%d, Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
+			newCmd := Op{"Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
 			kv.rf.Start(newCmd)
 		}
 		kv.mu.Unlock()
