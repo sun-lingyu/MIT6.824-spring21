@@ -58,7 +58,9 @@ func check_same_config(t *testing.T, c1 Config, c2 Config) {
 		t.Fatalf("Num wrong")
 	}
 	if c1.Shards != c2.Shards {
-		t.Fatalf("Shards wrong")
+		fmt.Printf("%d: %v", c1.Num, c1.Shards)
+		fmt.Printf("%d: %v", c2.Num, c2.Shards)
+		t.Fatalf("Num: %d Shards wrong", c1.Num)
 	}
 	if len(c1.Groups) != len(c2.Groups) {
 		t.Fatalf("number of Groups is wrong")
@@ -91,7 +93,6 @@ func TestBasic(t *testing.T) {
 	cfa[0] = ck.Query(-1)
 
 	check(t, []int{}, ck)
-
 	var gid1 int = 1
 	ck.Join(map[int][]string{gid1: []string{"x", "y", "z"}})
 	check(t, []int{gid1}, ck)

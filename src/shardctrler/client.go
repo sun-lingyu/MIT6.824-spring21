@@ -55,9 +55,12 @@ func (ck *Clerk) Query(num int) Config {
 }
 
 func (ck *Clerk) Join(servers map[int][]string) {
+	ck.version++
 	args := &JoinArgs{}
 	// Your code here.
 	args.Servers = servers
+	args.ID = ck.ID
+	args.Version = ck.version
 
 	for {
 		// try each known server.
@@ -73,9 +76,12 @@ func (ck *Clerk) Join(servers map[int][]string) {
 }
 
 func (ck *Clerk) Leave(gids []int) {
+	ck.version++
 	args := &LeaveArgs{}
 	// Your code here.
 	args.GIDs = gids
+	args.ID = ck.ID
+	args.Version = ck.version
 
 	for {
 		// try each known server.
@@ -91,10 +97,13 @@ func (ck *Clerk) Leave(gids []int) {
 }
 
 func (ck *Clerk) Move(shard int, gid int) {
+	ck.version++
 	args := &MoveArgs{}
 	// Your code here.
 	args.Shard = shard
 	args.GID = gid
+	args.ID = ck.ID
+	args.Version = ck.version
 
 	for {
 		// try each known server.

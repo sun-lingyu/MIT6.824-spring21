@@ -29,7 +29,8 @@ type Config struct {
 }
 
 const (
-	OK = "OK"
+	OK    = "OK"
+	WRONG = "WRONG"
 )
 
 type Err string
@@ -69,11 +70,28 @@ type MoveReply struct {
 }
 
 type QueryArgs struct {
-	Num int // desired config number
+	Num     int // desired config number
+	Version int64
+	ID      int
 }
 
 type QueryReply struct {
 	WrongLeader bool
 	Err         Err
 	Config      Config
+}
+
+func findArgMin(m map[int]int) int {
+	argmin := -1
+	min := NShards
+	for key, value := range m {
+		if value < min {
+			argmin = key
+			min = value
+		} else if value == min && key < argmin { //key < argmin: force determinisic
+			argmin = key
+			min = value
+		}
+	}
+	return argmin
 }
