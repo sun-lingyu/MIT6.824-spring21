@@ -111,7 +111,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 					return
 				}
 
-				//each loop: send all available log entries available and ensure success.
+				//each loop: send all available log entries available.
 
 				//if leader is idle, then it should wait until new log entry comes or timer fire.
 				for !rf.killed() && rf.nextIndex[server] > rf.log.lastIndex() {
@@ -131,7 +131,7 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 
 				//not idle
 				//still in rf.mu.Lock()
-				for !rf.killed() && rf.nextIndex[server] <= rf.log.lastIndex() {
+				if !rf.killed() && rf.nextIndex[server] <= rf.log.lastIndex() {
 					if rf.currentTerm != currentTerm && rf.state != leader {
 						return
 					}
@@ -146,9 +146,15 @@ func (rf *Raft) leaderProcess(currentTerm int) {
 						args := AppendEntriesArgs{Term: currentTerm, LeaderID: rf.me, PrevLogIndex: prevLogIndex, PrevLogTerm: prevLogTerm, Entries: append([]LogEntry(nil), rf.log.Entries[prevLogIndex-rf.log.LastIncludedIndex:]...), LeaderCommit: rf.commitIndex}
 						go rf.sender(args, currentTerm, server)
 					}
-					rf.mu.Unlock()
+
+					//the following code is sending too fast. This will cause congestion and slow down execution in lab3A.
+
+					/*rf.mu.Unlock()
 					time.Sleep(heartbeatInterval / 5) //wait for rf.sender to get reply and process it
-					rf.mu.Lock()
+					rf.mu.Lock()*/
+
+					//so I changed the code to the following line:
+					rf.newLogCome.Wait()
 				}
 			}
 		}(server)
@@ -188,6 +194,7 @@ func (rf *Raft) leader() {
 
 	所以每次raft选举后，向ApplyCh发送一个消息，提醒server主动start一个新的entry，并且这个entry里面应该有当前server的id，即kv. me。*/
 	go func() { rf.applyCh <- ApplyMsg{} }()
+	//fmt.Printf("NEW LEADER ELECTED\n")
 
 	rf.mu.Lock()
 	rf.state = leader
