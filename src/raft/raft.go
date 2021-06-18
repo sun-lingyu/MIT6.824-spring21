@@ -37,9 +37,9 @@ const (
 	follower                serverState   = iota
 	candidate               serverState   = iota
 	leader                  serverState   = iota
-	electionTimeoutStart    time.Duration = 400 * time.Millisecond //400
+	electionTimeoutStart    time.Duration = 600 * time.Millisecond //400
 	electionTimeoutInterval time.Duration = 100 * time.Millisecond
-	heartbeatInterval       time.Duration = 100 * time.Millisecond //100
+	heartbeatInterval       time.Duration = 200 * time.Millisecond //100
 )
 
 //
