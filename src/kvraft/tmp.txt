@@ -1,0 +1,4 @@
+Test: ops complete fast enough (3A) ...
+  ... Passed --  24.6  3  3151    0
+PASS
+ok  	6.824/kvraft	25.605s

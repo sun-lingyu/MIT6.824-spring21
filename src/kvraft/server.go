@@ -9,6 +9,8 @@ import (
 	"6.824/labgob"
 	"6.824/labrpc"
 	"6.824/raft"
+
+	"runtime"
 )
 
 const Debug = false
@@ -150,6 +152,10 @@ func (kv *KVServer) killed() bool {
 func (kv *KVServer) applyListener() {
 	for !kv.killed() {
 		DPrintf("%d listening\n", kv.me)
+		DPrintf("current goroutine number:%d", runtime.NumGoroutine())
+		if runtime.NumGoroutine() >= 100 {
+			panic(fmt.Sprintf("panic from %d", kv.me))
+		}
 		msg := <-kv.applyCh
 		DPrintf("%d get reply\n", kv.me)
 
@@ -157,6 +163,7 @@ func (kv *KVServer) applyListener() {
 			kv.mu.Lock()
 			DPrintf("%d get lock in applyListener\n", kv.me)
 			cmd := msg.Command.(Op)
+			DPrintf("Commad content: %s,%s,%s\n", cmd.Type, cmd.Key, cmd.Value)
 
 			if cmd.Type == "Newleader" {
 				if cmd.Leader == kv.me {
@@ -248,6 +255,7 @@ func (kv *KVServer) applyListener() {
 			//TODO
 			//snapshot
 		} else {
+			DPrintf("Newleader msg!\n")
 			kv.mu.Lock()
 			newCmd := Op{"Newleader", "invalid", "invalid", -1, -1, kv.me} //dummy cmd
 			kv.rf.Start(newCmd)

@@ -103,6 +103,7 @@ func (ck *Clerk) PutAppend(key string, value string, op string) {
 		reply := PutAppendReply{}
 
 		DPrintf("client %d sending PutAppend RPC to %d\n", ck.ID, (i+ck.lastServer)%len(ck.servers))
+		DPrintf("putappend value is %s,%s", key, value)
 		ok := ck.servers[(i+ck.lastServer)%len(ck.servers)].Call("KVServer.PutAppend", &args, &reply)
 
 		if !ok {
@@ -121,7 +122,7 @@ func (ck *Clerk) PutAppend(key string, value string, op string) {
 			DPrintf("set ck.lastServer to %d", ck.lastServer)
 			return
 		case ErrWrongLeader:
-			if i%len(ck.servers) == 0 {
+			if i != 0 && i%len(ck.servers) == 0 {
 				DPrintf("clerk put: traversed all servers but no one available.\n")
 				time.Sleep(100 * time.Millisecond)
 			}
