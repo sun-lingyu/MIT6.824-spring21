@@ -153,9 +153,6 @@ func (kv *KVServer) applyListener() {
 	for !kv.killed() {
 		DPrintf("%d listening\n", kv.me)
 		DPrintf("current goroutine number:%d", runtime.NumGoroutine())
-		if runtime.NumGoroutine() >= 100 {
-			panic(fmt.Sprintf("panic from %d", kv.me))
-		}
 		msg := <-kv.applyCh
 		DPrintf("%d get reply\n", kv.me)
 
