@@ -10,6 +10,8 @@ import (
 	"6.824/labgob"
 	"6.824/labrpc"
 	"6.824/raft"
+
+	"runtime"
 )
 
 const Debug = false
@@ -153,6 +155,7 @@ func (kv *KVServer) killed() bool {
 func (kv *KVServer) applyListener() {
 	for !kv.killed() {
 		DPrintf("%d listening\n", kv.me)
+		DPrintf("current goroutine number:%d", runtime.NumGoroutine())
 		msg := <-kv.applyCh
 		DPrintf("%d get reply\n", kv.me)
 		kv.mu.Lock()
@@ -160,6 +163,7 @@ func (kv *KVServer) applyListener() {
 
 			DPrintf("%d get lock in applyListener\n", kv.me)
 			cmd := msg.Command.(Op)
+			DPrintf("Commad content: %s,%s,%s\n", cmd.Type, cmd.Key, cmd.Value)
 
 			if cmd.Type == "Newleader" {
 				if cmd.Leader == kv.me {
@@ -174,6 +178,8 @@ func (kv *KVServer) applyListener() {
 					delete(kv.pendingChannels, i)
 					delete(kv.pendingMap, i)
 				}
+				kv.mu.Unlock()
+				continue
 			}
 
 			//duplicate detection
@@ -269,7 +275,7 @@ func (kv *KVServer) applyListener() {
 			}
 			//fmt.Printf("server:%d, SnapshotIndex: %d,condinstall finish\n", kv.me, msg.SnapshotIndex)
 		} else {
-			newCmd := Op{"server:%d, Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
+			newCmd := Op{"Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
 			kv.rf.Start(newCmd)
 		}
 		kv.mu.Unlock()
