@@ -32,7 +32,8 @@ type Op struct {
 	Value   string
 	Version int64
 	ID      int
-	Leader  int //only used for Newleader commands
+	Leader  int                       //only used for Newleader commands
+	Shards  [shardctrler.NShards]bool //only used for configuration change
 }
 
 type ShardKV struct {
@@ -75,7 +76,7 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 		return
 	}
 	DPrintf("Find %d leader\n", kv.me)
-	newCmd := Op{"Get", args.Key, "get_invalid", -1, -1, -1}
+	newCmd := Op{Type: "Get", Key: args.Key, Value: "get_invalid"}
 	index, _, _ := kv.rf.Start(newCmd)
 
 	kv.pendingChannels[index] = make(chan handlerReply) //used to receive Err message
@@ -118,7 +119,7 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 		return
 	}
 
-	newCmd := Op{args.Op, args.Key, args.Value, args.Version, args.ID, -1}
+	newCmd := Op{Type: args.Op, Key: args.Key, Value: args.Value, Version: args.Version, ID: args.ID}
 	index, _, _ := kv.rf.Start(newCmd)
 
 	kv.pendingChannels[index] = make(chan handlerReply) //used to receive Err message
@@ -151,6 +152,17 @@ func (kv *ShardKV) killed() bool {
 	return z == 1
 }
 
+func (kv *ShardKV) abortLeader() {
+	//we are not leader anymore.
+	for i, ch := range kv.pendingChannels {
+		DPrintf("%d not leader anymore!\n", kv.me)
+		ch <- handlerReply{ErrWrongLeader, ""}
+		close(ch)
+		delete(kv.pendingChannels, i)
+		delete(kv.pendingMap, i)
+	}
+}
+
 func (kv *ShardKV) applyListener() {
 	for !kv.killed() {
 		DPrintf("%d listening\n", kv.me)
@@ -163,17 +175,16 @@ func (kv *ShardKV) applyListener() {
 
 			if cmd.Type == "Newleader" {
 				if cmd.Leader == kv.me {
-					kv.mu.Unlock()
-					continue
+					go kv.pollCtrler(100 * time.Millisecond)
+				} else {
+					kv.abortLeader()
 				}
-				for i, ch := range kv.pendingChannels {
-					//we are not leader anymore.
-					DPrintf("%d not leader anymore!\n", kv.me)
-					ch <- handlerReply{ErrWrongLeader, ""}
-					close(ch)
-					delete(kv.pendingChannels, i)
-					delete(kv.pendingMap, i)
-				}
+				kv.mu.Unlock()
+				continue
+			}
+
+			if cmd.Type == "Newconfig" {
+				kv.shards = cmd.Shards //update shards
 				kv.mu.Unlock()
 				continue
 			}
@@ -218,15 +229,7 @@ func (kv *ShardKV) applyListener() {
 
 			if hasKey {
 				if cmd != oldCmd {
-					for i, ch := range kv.pendingChannels {
-						//clear all
-						DPrintf("%d send in loop\n", kv.me)
-						ch <- handlerReply{ErrWrongLeader, ""}
-						close(ch)
-						delete(kv.pendingChannels, i)
-						delete(kv.pendingMap, i)
-					}
-
+					kv.abortLeader()
 				} else {
 					DPrintf("%d send out of loop\n", kv.me)
 					var hreply handlerReply
@@ -255,14 +258,7 @@ func (kv *ShardKV) applyListener() {
 				}
 				DPrintf("%d sending finish\n", kv.me)
 			} else { //must exist another leader.
-				for i, ch := range kv.pendingChannels {
-					//clear all
-					DPrintf("%d send in loop1\n", kv.me)
-					ch <- handlerReply{ErrWrongLeader, ""}
-					close(ch)
-					delete(kv.pendingChannels, i)
-					delete(kv.pendingMap, i)
-				}
+				kv.abortLeader()
 			}
 
 			//check whether need to snapshot.
@@ -286,7 +282,7 @@ func (kv *ShardKV) applyListener() {
 			}
 			//fmt.Printf("server:%d, SnapshotIndex: %d,condinstall finish\n", kv.me, msg.SnapshotIndex)
 		} else {
-			newCmd := Op{"Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
+			newCmd := Op{Type: "Newleader", Key: "Newleader_invalid", Value: "Newleader_invalid", Leader: kv.me} //dummy cmd
 			kv.rf.Start(newCmd)
 		}
 		kv.mu.Unlock()
@@ -311,64 +307,79 @@ func (kv *ShardKV) readPersist(data []byte) {
 	}
 }
 
+func (kv *ShardKV) askMissing(map[int][]int) {
+
+}
+
+//only leader can poll
 func (kv *ShardKV) pollCtrler(duration time.Duration) {
 	configNum := 1
+	var currshards [shardctrler.NShards]bool //initialized to all false
+	var currconfig shardctrler.Config
 	for !kv.killed() {
+
+		//check leadership
+		kv.mu.Lock()
+		_, isLeader := kv.rf.GetState()
+		if !isLeader {
+			kv.mu.Unlock()
+			return
+		}
+		kv.mu.Unlock()
+
+		//query for new configuration
 		newConfig := kv.mck.Query(configNum)
 		if newConfig.Num != configNum {
 			//get an old config
 			time.Sleep(duration)
 			continue
 		}
-		//fmt.Printf("Get new config %d, I'm %d in group %d\n", configNum, kv.me, kv.gid)
+
 		//get a new config
-		//fmt.Printf("%v", newConfig.Shards)
 		kv.mu.Lock() //REMEMBER TO UNLOCK!!!
 		configNum++
 
-		for shard, gid := range newConfig.Shards {
-			if gid == kv.gid {
-				kv.shards[shard] = true
-				//fmt.Printf("gid %d is responsible for shard %d\n", gid, shard)
-			} else {
-				kv.shards[shard] = false
-			}
-		}
-		kv.mu.Unlock()
-		time.Sleep(duration)
-
-		//check: first valid config
-		/*if configNum == 2 {
+		//parse the config
+		//newshards that need to be fetched from other groups
+		newshards := make(map[int][]int) //gid->shards
+		if configNum != 2 {
+			//not needed if this is the first valid config(i.e. configNum==2)
 			for shard, gid := range newConfig.Shards {
-				if gid == kv.gid {
-					kv.shards[shard] = true
-					//fmt.Printf("gid %d is responsible for shard %d\n", gid, shard)
+				if gid == kv.gid && currshards[shard] == false {
+					originalGid := currconfig.Shards[shard]
+					_, ok := newshards[originalGid]
+					if !ok {
+						newshards[originalGid] = make([]int, 0)
+					}
+					newshards[originalGid] = append(newshards[originalGid], shard)
 				}
 			}
-			kv.mu.Unlock()
-			time.Sleep(duration)
-			continue
-		}*/
-
-		//TODO: complete the following logic.
-
-		//parse the config
-		/*newshards := make([]int, 0)
-		oldshards := make([]int, 0)
+		}
+		//update currshards
 		for shard, gid := range newConfig.Shards {
-			if gid == kv.gid && kv.shards[shard] == false {
-				newshards = append(newshards, shard)
-			}
-		}
-		for shard, v := range kv.shards {
-			if v && newConfig.Shards[shard] != kv.gid {
-				oldshards = append(oldshards, shard)
+			if gid == kv.gid {
+				currshards[shard] = true
+				//fmt.Printf("gid %d is responsible for shard %d\n", gid, shard)
+			} else {
+				currshards[shard] = false
 			}
 		}
 
-		//request newshards
+		//ask for missing shards synchronously
+		if configNum != 2 {
+			//not needed if this is the first valid config(i.e. configNum==2)
+			kv.askMissing(newshards)
+		}
 
-		kv.mu.Unlock()*/
+		//acceptable to continue to store shards that it no longer owns
+		//a possible optimization is to discard shards when all groups have advanced above those shards' configNum
+		//but it is built on this, and we are not required to do so.
+
+		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: currshards}
+		kv.rf.Start(newCmd)
+
+		kv.mu.Unlock()
+		time.Sleep(duration)
 	}
 }
 
@@ -432,8 +443,6 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 	kv.mck = shardctrler.MakeClerk(kv.ctrlers)
 
 	go kv.applyListener()
-
-	go kv.pollCtrler(100 * time.Millisecond)
 
 	return kv
 }
