@@ -46,3 +46,11 @@ type GetReply struct {
 	Err   Err
 	Value string
 }
+
+type MigrateArgs struct {
+	Shards []int
+}
+type MigrateReply struct {
+	Err   Err
+	KvMap map[string]string
+}

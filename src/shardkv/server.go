@@ -307,24 +307,35 @@ func (kv *ShardKV) readPersist(data []byte) {
 	}
 }
 
-func (kv *ShardKV) askMissing(newshards map[int][]int, currconfig shardctrler.Config) {
+func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
+
+}
+
+func (kv *ShardKV) askMissing(newshards map[int][]int, currconfig shardctrler.Config) map[string]string {
+	var result map[string]string
 	for gid, shards := range newshards {
 		if servers, ok := currconfig.Groups[gid]; ok {
 			// try each server for the shard.
 			for si := 0; si < len(servers); si++ {
 				srv := kv.make_end(servers[si])
-				var reply GetReply
-				ok := srv.Call("ShardKV.Get", &args, &reply)
-				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
-					return reply.Value
+				args := MigrateArgs{shards}
+				var reply MigrateReply
+				ok := srv.Call("ShardKV.Migrate", &args, &reply)
+				if ok && (reply.Err == OK) {
+					for k, v := range reply.KvMap {
+						result[k] = v
+					}
+				} else if ok && (reply.Err == ErrWrongLeader) {
+					continue
+				} else {
+					panic("Migrate RPC fails.")
 				}
-				if ok && (reply.Err == ErrWrongGroup) {
-					break
-				}
-				// ... not ok, or ErrWrongLeader
 			}
+		} else {
+			panic("gid not found in currconfig.Groups in function askMissing.")
 		}
 	}
+	return result
 }
 
 //only leader can poll
