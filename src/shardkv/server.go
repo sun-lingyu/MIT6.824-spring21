@@ -307,8 +307,24 @@ func (kv *ShardKV) readPersist(data []byte) {
 	}
 }
 
-func (kv *ShardKV) askMissing(map[int][]int) {
-
+func (kv *ShardKV) askMissing(newshards map[int][]int, currconfig shardctrler.Config) {
+	for gid, shards := range newshards {
+		if servers, ok := currconfig.Groups[gid]; ok {
+			// try each server for the shard.
+			for si := 0; si < len(servers); si++ {
+				srv := kv.make_end(servers[si])
+				var reply GetReply
+				ok := srv.Call("ShardKV.Get", &args, &reply)
+				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
+					return reply.Value
+				}
+				if ok && (reply.Err == ErrWrongGroup) {
+					break
+				}
+				// ... not ok, or ErrWrongLeader
+			}
+		}
+	}
 }
 
 //only leader can poll
@@ -336,7 +352,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 		}
 
 		//get a new config
-		kv.mu.Lock() //REMEMBER TO UNLOCK!!!
+		kv.mu.Lock()
 		configNum++
 
 		//parse the config
@@ -368,13 +384,15 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 		//ask for missing shards synchronously
 		if configNum != 2 {
 			//not needed if this is the first valid config(i.e. configNum==2)
-			kv.askMissing(newshards)
+			kv.askMissing(newshards, currconfig)
 		}
+		currconfig = newConfig
 
 		//acceptable to continue to store shards that it no longer owns
 		//a possible optimization is to discard shards when all groups have advanced above those shards' configNum
 		//but it is built on this, and we are not required to do so.
 
+		//feed new config to raft
 		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: currshards}
 		kv.rf.Start(newCmd)
 
