@@ -194,6 +194,9 @@ func (kv *ShardKV) applyListener() {
 
 			if cmd.Type == "Newconfig" {
 				kv.shards = cmd.Shards //update shards
+				for k, v := range cmd.NewKV {
+					kv.kvMap[k] = v
+				}
 				kv.mu.Unlock()
 				continue
 			}
@@ -317,7 +320,29 @@ func (kv *ShardKV) readPersist(data []byte) {
 }
 
 func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
+	kv.mu.Lock()
+	defer kv.mu.Unlock()
+	DPrintf("server %d: process Get\n", kv.me)
 
+	_, isLeader := kv.rf.GetState()
+	if !isLeader {
+		reply.Err = ErrWrongLeader
+		return
+	}
+	DPrintf("Migrate: Find %d leader\n", kv.me)
+	reply.Err = OK
+
+	var shardfilter [shardctrler.NShards]bool //all initialized to false
+	for _, shard := range args.Shards {
+		shardfilter[shard] = true
+	}
+
+	for k, v := range kv.kvMap {
+		if shardfilter[key2shard(k)] {
+			reply.KvMap[k] = v
+		}
+	}
+	return
 }
 
 func (kv *ShardKV) askMissing(newshards map[int][]int, currconfig shardctrler.Config) map[string]string {
