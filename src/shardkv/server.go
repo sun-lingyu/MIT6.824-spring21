@@ -34,6 +34,15 @@ type Op struct {
 	ID      int
 	Leader  int                       //only used for Newleader commands
 	Shards  [shardctrler.NShards]bool //only used for configuration change
+	NewKV   map[string]string         //only used for configuration change
+}
+
+func cmp(a Op, b Op) bool {
+	//only for the comparison of Get/Put/Append Ops
+	if a.Type != b.Type || a.Key != b.Key || a.Value != b.Value || a.Version != b.Version || a.ID != b.ID {
+		return false
+	}
+	return true
 }
 
 type ShardKV struct {
@@ -228,7 +237,7 @@ func (kv *ShardKV) applyListener() {
 			oldCmd := kv.pendingMap[msg.CommandIndex]
 
 			if hasKey {
-				if cmd != oldCmd {
+				if cmp(cmd, oldCmd) == false {
 					kv.abortLeader()
 				} else {
 					DPrintf("%d send out of loop\n", kv.me)
@@ -393,9 +402,10 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 		}
 
 		//ask for missing shards synchronously
+		var newKV map[string]string
 		if configNum != 2 {
 			//not needed if this is the first valid config(i.e. configNum==2)
-			kv.askMissing(newshards, currconfig)
+			newKV = kv.askMissing(newshards, currconfig)
 		}
 		currconfig = newConfig
 
@@ -404,7 +414,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 		//but it is built on this, and we are not required to do so.
 
 		//feed new config to raft
-		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: currshards}
+		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: currshards, NewKV: newKV}
 		kv.rf.Start(newCmd)
 
 		kv.mu.Unlock()
