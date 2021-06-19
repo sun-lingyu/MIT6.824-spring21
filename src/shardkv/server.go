@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -75,7 +76,6 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 		return
 	}
 	DPrintf("Find %d leader\n", kv.me)
-
 	newCmd := Op{"Get", args.Key, "get_invalid", -1, -1, -1}
 	index, _, _ := kv.rf.Start(newCmd)
 
@@ -89,6 +89,9 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 
 	reply.Err = hreply.err
 	reply.Value = hreply.value
+	if hreply.err == OK {
+		fmt.Printf("Get returned %v\n", hreply.value)
+	}
 
 	DPrintf("finish processing get: %v, Err=%v\n", reply.Value, reply.Err)
 }
@@ -131,6 +134,13 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	kv.mu.Lock()
 
 	reply.Err = hreply.err
+	if args.Key == strconv.Itoa(0) {
+		fmt.Printf("%v\n", hreply.value)
+	}
+
+	if hreply.err == OK {
+		fmt.Printf("%v PutAppend returned %v\n", args.Key, hreply.value)
+	}
 
 	DPrintf("finish processing putappend: %v, Err=%v\n", newCmd.Value, hreply.err)
 
@@ -160,7 +170,6 @@ func (kv *ShardKV) applyListener() {
 		DPrintf("%d get reply\n", kv.me)
 		kv.mu.Lock()
 		if msg.CommandValid {
-
 			DPrintf("%d get lock in applyListener\n", kv.me)
 			cmd := msg.Command.(Op)
 
@@ -177,6 +186,8 @@ func (kv *ShardKV) applyListener() {
 					delete(kv.pendingChannels, i)
 					delete(kv.pendingMap, i)
 				}
+				kv.mu.Unlock()
+				continue
 			}
 
 			//duplicate detection
@@ -192,12 +203,14 @@ func (kv *ShardKV) applyListener() {
 					//fmt.Printf("duplicate detected\n")
 					goto sendHreply
 				}
-				//apply changes
+				//not a duplicate one
 				kv.dupMap[cmd.ID] = cmd.Version
+				//check whether responsible for the key
 				if kv.shards[key2shard(cmd.Key)] == false {
-					//not responsible for this key
 					goto sendHreply
 				}
+				//apply changes
+				fmt.Printf("%v = %v applied!\n", cmd.Key, cmd.Value)
 				switch cmd.Type {
 				case "Append":
 					kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
@@ -226,17 +239,25 @@ func (kv *ShardKV) applyListener() {
 				} else {
 					DPrintf("%d send out of loop\n", kv.me)
 					var hreply handlerReply
-					if cmd.Type == "Get" {
-						elem, ok := kv.kvMap[cmd.Key]
-						if ok {
-							hreply.err = OK
-							hreply.value = elem
-						} else {
-							hreply.err = ErrNoKey
-						}
+					//check whether responsible for the key
+					if kv.shards[key2shard(cmd.Key)] == false {
+						hreply.err = ErrWrongGroup
 					} else {
-						hreply.err = OK
+						if cmd.Type == "Get" {
+							elem, ok := kv.kvMap[cmd.Key]
+							fmt.Printf("%v, %v, %v\n", cmd.Key, ok, elem)
+							if ok {
+								hreply.err = OK
+								hreply.value = elem
+							} else {
+								hreply.err = ErrNoKey
+							}
+						} else {
+							//Put or Append
+							hreply.err = OK
+						}
 					}
+
 					kv.pendingChannels[msg.CommandIndex] <- hreply
 					close(kv.pendingChannels[msg.CommandIndex])
 					delete(kv.pendingChannels, msg.CommandIndex)
@@ -268,7 +289,6 @@ func (kv *ShardKV) applyListener() {
 			}
 
 		} else if msg.SnapshotValid {
-			//TODO
 			//snapshot
 			//fmt.Printf("server:%d, SnapshotIndex: %d, condinstall begin\n", kv.me, msg.SnapshotIndex)
 			if kv.rf.CondInstallSnapshot(msg.SnapshotTerm, msg.SnapshotIndex, msg.Snapshot) {
@@ -276,7 +296,7 @@ func (kv *ShardKV) applyListener() {
 			}
 			//fmt.Printf("server:%d, SnapshotIndex: %d,condinstall finish\n", kv.me, msg.SnapshotIndex)
 		} else {
-			newCmd := Op{"server:%d, Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
+			newCmd := Op{"Newleader", "Newleader_invalid", "Newleader_invalid", -1, -1, kv.me} //dummy cmd
 			kv.rf.Start(newCmd)
 		}
 		kv.mu.Unlock()
@@ -310,27 +330,40 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 			time.Sleep(duration)
 			continue
 		}
-
+		//fmt.Printf("Get new config %d, I'm %d in group %d\n", configNum, kv.me, kv.gid)
 		//get a new config
+		//fmt.Printf("%v", newConfig.Shards)
 		kv.mu.Lock() //REMEMBER TO UNLOCK!!!
 		configNum++
 
+		for shard, gid := range newConfig.Shards {
+			if gid == kv.gid {
+				kv.shards[shard] = true
+				//fmt.Printf("gid %d is responsible for shard %d\n", gid, shard)
+			} else {
+				kv.shards[shard] = false
+			}
+		}
+		kv.mu.Unlock()
+		time.Sleep(duration)
+
 		//check: first valid config
-		if configNum == 2 {
+		/*if configNum == 2 {
 			for shard, gid := range newConfig.Shards {
 				if gid == kv.gid {
 					kv.shards[shard] = true
+					//fmt.Printf("gid %d is responsible for shard %d\n", gid, shard)
 				}
 			}
 			kv.mu.Unlock()
 			time.Sleep(duration)
 			continue
-		}
+		}*/
 
 		//TODO: complete the following logic.
 
 		//parse the config
-		newshards := make([]int, 0)
+		/*newshards := make([]int, 0)
 		oldshards := make([]int, 0)
 		for shard, gid := range newConfig.Shards {
 			if gid == kv.gid && kv.shards[shard] == false {
@@ -345,7 +378,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 
 		//request newshards
 
-		kv.mu.Unlock()
+		kv.mu.Unlock()*/
 	}
 }
 
@@ -392,7 +425,9 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 	// Your initialization code here.
 
 	// Use something like this to talk to the shardctrler:
-	kv.mck = shardctrler.MakeClerk(kv.ctrlers)
+
+	kv.applyCh = make(chan raft.ApplyMsg)
+	kv.rf = raft.Make(servers, me, persister, kv.applyCh)
 
 	// You may need initialization code here.
 	kv.kvMap = make(map[string]string)
@@ -400,10 +435,11 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 	kv.pendingMap = make(map[int]Op)
 	kv.dupMap = make(map[int]int64)
 
-	kv.applyCh = make(chan raft.ApplyMsg)
-	kv.rf = raft.Make(servers, me, persister, kv.applyCh)
+	kv.persister = persister
 
 	kv.readPersist(persister.ReadSnapshot())
+
+	kv.mck = shardctrler.MakeClerk(kv.ctrlers)
 
 	go kv.applyListener()
 

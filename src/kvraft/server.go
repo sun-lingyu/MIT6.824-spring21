@@ -195,8 +195,9 @@ func (kv *KVServer) applyListener() {
 					//fmt.Printf("duplicate detected\n")
 					goto sendHreply
 				}
-				//apply changes
+				//not a duplicate one
 				kv.dupMap[cmd.ID] = cmd.Version
+				//apply changes
 				switch cmd.Type {
 				case "Append":
 					kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
