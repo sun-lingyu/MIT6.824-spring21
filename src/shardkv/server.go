@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -89,9 +88,6 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 
 	reply.Err = hreply.err
 	reply.Value = hreply.value
-	if hreply.err == OK {
-		fmt.Printf("Get returned %v\n", hreply.value)
-	}
 
 	DPrintf("finish processing get: %v, Err=%v\n", reply.Value, reply.Err)
 }
@@ -134,16 +130,8 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	kv.mu.Lock()
 
 	reply.Err = hreply.err
-	if args.Key == strconv.Itoa(0) {
-		fmt.Printf("%v\n", hreply.value)
-	}
-
-	if hreply.err == OK {
-		fmt.Printf("%v PutAppend returned %v\n", args.Key, hreply.value)
-	}
 
 	DPrintf("finish processing putappend: %v, Err=%v\n", newCmd.Value, hreply.err)
-
 }
 
 //
@@ -203,14 +191,17 @@ func (kv *ShardKV) applyListener() {
 					//fmt.Printf("duplicate detected\n")
 					goto sendHreply
 				}
-				//not a duplicate one
-				kv.dupMap[cmd.ID] = cmd.Version
 				//check whether responsible for the key
 				if kv.shards[key2shard(cmd.Key)] == false {
 					goto sendHreply
 				}
+				//not a duplicate one
+				//must **not** treat irresponsible ones as duplicate
+				//since we may be outdated compared to the ctrler, and we are actually responsible
+				//then the client will retry and send the same cmd to us
+				//we should not treat such cmds as duplicate!
+				kv.dupMap[cmd.ID] = cmd.Version
 				//apply changes
-				fmt.Printf("%v = %v applied!\n", cmd.Key, cmd.Value)
 				switch cmd.Type {
 				case "Append":
 					kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
@@ -245,7 +236,6 @@ func (kv *ShardKV) applyListener() {
 					} else {
 						if cmd.Type == "Get" {
 							elem, ok := kv.kvMap[cmd.Key]
-							fmt.Printf("%v, %v, %v\n", cmd.Key, ok, elem)
 							if ok {
 								hreply.err = OK
 								hreply.value = elem
