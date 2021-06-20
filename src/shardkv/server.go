@@ -368,13 +368,13 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 
 	//fall behind
 	//tell the other group to wait
-	if args.ConfigNum > kv.currConfigNum {
+	if args.CurrConfigNum > kv.currConfigNum {
 		reply.Err = ErrNotPrepared
 		fmt.Printf("Migrate: ErrNotPrepared\n")
 		return
 	}
 	//in same
-	if args.ConfigNum == kv.currConfigNum {
+	if args.CurrConfigNum == kv.currConfigNum {
 		//TODO: disable some kv
 
 	}
@@ -396,7 +396,7 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 	return
 }
 
-func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Config, configNum int) map[string]string {
+func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Config, currConfigNum int) map[string]string {
 	//not holding the lock
 	result := make(map[string]string)
 	for gid, shards := range newshards {
@@ -404,7 +404,7 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Co
 			// try each server for the shard.
 			for si := 0; si < len(servers); si++ {
 				srv := kv.make_end(servers[si])
-				args := MigrateArgs{shards, configNum}
+				args := MigrateArgs{shards, currConfigNum}
 				var reply MigrateReply
 				ok := true
 				ok = srv.Call("ShardKV.Migrate", &args, &reply)
@@ -486,7 +486,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 		if kv.currConfigNum+1 != 1 {
 			kv.mu.Unlock()
 			//not needed if this is the first valid config(i.e. currConfigNum+1==1)
-			newKV = kv.askMissing(newshards, kv.currConfig, kv.currConfigNum+1)
+			newKV = kv.askMissing(newshards, kv.currConfig, kv.currConfigNum)
 			kv.mu.Lock()
 		}
 
