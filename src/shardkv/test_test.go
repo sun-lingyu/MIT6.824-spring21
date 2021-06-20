@@ -2,9 +2,16 @@ package shardkv
 
 import (
 	"fmt"
+	"io/ioutil"
+	"math/rand"
 	"strconv"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
+
+	"6.824/models"
+	"6.824/porcupine"
 )
 
 const linearizabilityCheckTimeout = 1 * time.Second
@@ -90,7 +97,6 @@ func TestStaticShards(t *testing.T) {
 	fmt.Printf("  ... Passed\n")
 }
 
-/*
 func TestJoinLeave(t *testing.T) {
 	fmt.Printf("Test: join then leave ...\n")
 
@@ -233,13 +239,11 @@ func TestMissChange(t *testing.T) {
 	for i := 0; i < n; i++ {
 		check(t, ck, ka[i], va[i])
 	}
-
 	cfg.join(1)
 
 	cfg.ShutdownServer(0, 0)
 	cfg.ShutdownServer(1, 0)
 	cfg.ShutdownServer(2, 0)
-
 	cfg.join(2)
 	cfg.leave(1)
 	cfg.leave(0)
@@ -942,4 +946,4 @@ func TestChallenge2Partial(t *testing.T) {
 	}
 
 	fmt.Printf("  ... Passed\n")
-}*/
+}
