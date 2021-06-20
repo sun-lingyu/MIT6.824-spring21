@@ -49,8 +49,8 @@ type GetReply struct {
 }
 
 type MigrateArgs struct {
-	Shards            []int
-	ExpectedConfigNum int
+	Shards    []int
+	ConfigNum int
 }
 type MigrateReply struct {
 	Err   Err
