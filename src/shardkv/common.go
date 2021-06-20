@@ -14,6 +14,7 @@ const (
 	ErrNoKey       = "ErrNoKey"
 	ErrWrongGroup  = "ErrWrongGroup"
 	ErrWrongLeader = "ErrWrongLeader"
+	ErrNotPrepared = "ErrNotPrepared"
 )
 
 type Err string
@@ -48,7 +49,8 @@ type GetReply struct {
 }
 
 type MigrateArgs struct {
-	Shards []int
+	Shards            []int
+	expectedConfigNum int
 }
 type MigrateReply struct {
 	Err   Err

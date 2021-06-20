@@ -64,11 +64,14 @@ type ShardKV struct {
 
 	persister *raft.Persister
 
-	mck        *shardctrler.Clerk
-	shards     [shardctrler.NShards]bool //shards that this group is responsible for now(maybe slightly outdated, then updated to kv.currshards)
-	configNum  int                       //expected next config number
-	currshards [shardctrler.NShards]bool //the **expected** shards this group is currently responsible for. this is different from kv.shards.
-	currconfig shardctrler.Config
+	mck *shardctrler.Clerk
+
+	currConfigNum int                       //current config number(already got consensus)
+	currShards    [shardctrler.NShards]bool //shards that this group is responsible for now(already got consensus)(maybe slightly outdated, then updated to kv.expectedShards)
+
+	expectedConfigNum int                       //expected next config number
+	expectedShards    [shardctrler.NShards]bool //the **expected** shards this group is currently responsible for. this is different from kv.currShards.
+	expectedConfig    shardctrler.Config        //used for migration
 }
 
 type handlerReply struct { //message between applyListener and RPC Handlers.
@@ -196,7 +199,7 @@ func (kv *ShardKV) applyListener() {
 			}
 
 			if cmd.Type == "Newconfig" {
-				kv.shards = cmd.Shards //update shards
+				kv.currShards = cmd.Shards //update currShards
 				for k, v := range cmd.NewKV {
 					kv.kvMap[k] = v
 				}
@@ -218,7 +221,7 @@ func (kv *ShardKV) applyListener() {
 					goto sendHreply
 				}
 				//check whether responsible for the key
-				if kv.shards[key2shard(cmd.Key)] == false {
+				if kv.currShards[key2shard(cmd.Key)] == false {
 					goto sendHreply
 				}
 				//not a duplicate one
@@ -249,7 +252,7 @@ func (kv *ShardKV) applyListener() {
 					DPrintf("%d send out of loop\n", kv.me)
 					var hreply handlerReply
 					//check whether responsible for the key
-					if kv.shards[key2shard(cmd.Key)] == false {
+					if kv.currShards[key2shard(cmd.Key)] == false {
 						hreply.err = ErrWrongGroup
 					} else {
 						if cmd.Type == "Get" {
@@ -284,10 +287,10 @@ func (kv *ShardKV) applyListener() {
 				e := labgob.NewEncoder(w)
 				e.Encode(kv.dupMap)
 				e.Encode(kv.kvMap)
-				e.Encode(kv.shards)
-				e.Encode(kv.configNum)
-				e.Encode(kv.currshards)
-				e.Encode(kv.currconfig)
+				e.Encode(kv.currShards)
+				e.Encode(kv.expectedConfigNum)
+				e.Encode(kv.expectedShards)
+				e.Encode(kv.expectedConfig)
 				data := w.Bytes()
 				kv.rf.Snapshot(msg.CommandIndex, data)
 				//fmt.Printf("server:%d, msg.index: %d, after: %d\n", kv.me, msg.CommandIndex, kv.persister.RaftStateSize())
@@ -318,24 +321,24 @@ func (kv *ShardKV) readPersist(data []byte) {
 	d := labgob.NewDecoder(r)
 	var dupMap map[int]int64
 	var kvMap map[string]string
-	var shards [shardctrler.NShards]bool
-	var configNum int
-	var currshards [shardctrler.NShards]bool
-	var currconfig shardctrler.Config
+	var currShards [shardctrler.NShards]bool
+	var expectedConfigNum int
+	var expectedShards [shardctrler.NShards]bool
+	var expectedConfig shardctrler.Config
 	if d.Decode(&dupMap) != nil ||
 		d.Decode(&kvMap) != nil ||
-		d.Decode(&shards) != nil ||
-		d.Decode(&configNum) != nil ||
-		d.Decode(&currshards) != nil ||
-		d.Decode(&currconfig) != nil {
+		d.Decode(&currShards) != nil ||
+		d.Decode(&expectedConfigNum) != nil ||
+		d.Decode(&expectedShards) != nil ||
+		d.Decode(&expectedConfig) != nil {
 		fmt.Printf("server %d readPersist(kv): decode error!", kv.me)
 	} else {
 		kv.dupMap = dupMap
 		kv.kvMap = kvMap
-		kv.shards = shards
-		kv.configNum = configNum
-		kv.currshards = currshards
-		kv.currconfig = currconfig
+		kv.currShards = currShards
+		kv.expectedConfigNum = expectedConfigNum
+		kv.expectedShards = expectedShards
+		kv.expectedConfig = expectedConfig
 	}
 }
 
@@ -350,6 +353,14 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 		return
 	}
 	DPrintf("Migrate: Find %d leader\n", kv.me)
+
+	//check whether we are outdated
+	if args.expectedConfigNum >= kv.expectedConfigNum {
+		//do something
+		reply.Err = ErrNotPrepared
+		fmt.Printf("Migrate: ErrNotPrepared\n")
+		return
+	}
 	reply.Err = OK
 
 	var shardfilter [shardctrler.NShards]bool //all initialized to false
@@ -364,17 +375,18 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 			reply.KvMap[k] = v
 		}
 	}
+
 	return
 }
 
-func (kv *ShardKV) askMissing(newshards map[int][]int, currconfig shardctrler.Config) map[string]string {
+func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrler.Config, expectedConfigNum int) map[string]string {
 	result := make(map[string]string)
 	for gid, shards := range newshards {
-		if servers, ok := currconfig.Groups[gid]; ok {
+		if servers, ok := expectedConfig.Groups[gid]; ok {
 			// try each server for the shard.
 			for si := 0; si < len(servers); si++ {
 				srv := kv.make_end(servers[si])
-				args := MigrateArgs{shards}
+				args := MigrateArgs{shards, expectedConfigNum}
 				var reply MigrateReply
 				ok := srv.Call("ShardKV.Migrate", &args, &reply)
 				if ok && (reply.Err == OK) {
@@ -389,7 +401,7 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, currconfig shardctrler.Co
 				}
 			}
 		} else {
-			panic("gid not found in currconfig.Groups in function askMissing.")
+			panic("gid not found in expectedConfig.Groups in function askMissing.")
 		}
 	}
 	return result
@@ -409,8 +421,8 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 		kv.mu.Unlock()
 
 		//query for new configuration
-		newConfig := kv.mck.Query(kv.configNum)
-		if newConfig.Num != kv.configNum {
+		newConfig := kv.mck.Query(kv.expectedConfigNum)
+		if newConfig.Num != kv.expectedConfigNum {
 			//get an old config
 			time.Sleep(duration)
 			continue
@@ -418,16 +430,15 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 
 		//get a new config
 		kv.mu.Lock()
-		kv.configNum++
 
 		//parse the config
 		//newshards that need to be fetched from other groups
 		newshards := make(map[int][]int) //gid->shards
-		if kv.configNum != 2 {
-			//not needed if this is the first valid config(i.e. configNum==2)
+		if kv.expectedConfigNum != 1 {
+			//not needed if this is the first valid config(i.e. expectedConfigNum==1)
 			for shard, gid := range newConfig.Shards {
-				if gid == kv.gid && kv.currshards[shard] == false {
-					originalGid := kv.currconfig.Shards[shard]
+				if gid == kv.gid && kv.expectedShards[shard] == false {
+					originalGid := kv.expectedConfig.Shards[shard]
 					_, ok := newshards[originalGid]
 					if !ok {
 						newshards[originalGid] = make([]int, 0)
@@ -436,32 +447,33 @@ func (kv *ShardKV) pollCtrler(duration time.Duration) {
 				}
 			}
 		}
-		//update currshards
+		//update expectedShards
 		for shard, gid := range newConfig.Shards {
 			if gid == kv.gid {
-				kv.currshards[shard] = true
+				kv.expectedShards[shard] = true
 				//fmt.Printf("gid %d is responsible for shard %d\n", gid, shard)
 			} else {
-				kv.currshards[shard] = false
+				kv.expectedShards[shard] = false
 			}
 		}
 
 		//ask for missing shards synchronously
 		var newKV map[string]string
-		if kv.configNum != 2 {
+		if kv.expectedConfigNum != 1 {
 			kv.mu.Unlock()
-			//not needed if this is the first valid config(i.e. configNum==2)
-			newKV = kv.askMissing(newshards, kv.currconfig)
+			//not needed if this is the first valid config(i.e. expectedConfigNum==1)
+			newKV = kv.askMissing(newshards, kv.expectedConfig, kv.expectedConfigNum)
 			kv.mu.Lock()
 		}
-		kv.currconfig = newConfig
+		kv.expectedConfig = newConfig
+		kv.expectedConfigNum++
 
 		//acceptable to continue to store shards that it no longer owns
-		//a possible optimization is to discard shards when all groups have advanced above those shards' configNum
+		//a possible optimization is to discard shards when all groups have advanced above those shards' expectedConfigNum
 		//but it is built on this, and we are not required to do so.
 
 		//feed new config to raft
-		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: kv.currshards, NewKV: newKV}
+		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: kv.expectedShards, NewKV: newKV}
 		kv.rf.Start(newCmd)
 
 		kv.mu.Unlock()
@@ -524,7 +536,7 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 
 	kv.persister = persister
 
-	kv.configNum = 1
+	kv.expectedConfigNum = 1
 
 	kv.readPersist(persister.ReadSnapshot())
 
