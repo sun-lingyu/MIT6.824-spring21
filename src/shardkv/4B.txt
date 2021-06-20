@@ -3,17 +3,5 @@ Test: static shards ...
 Test: join then leave ...
   ... Passed
 Test: snapshots, join, and leave ...
-  ... Passed
-Test: servers miss configuration changes...
-false
-panic: Migrate RPC fails.
-
-goroutine 13885 [running]:
-6.824/shardkv.(*ShardKV).askMissing(0xc0004c7680, 0xc0003afd00, 0x1, 0x64, 0x64, 0x64, 0x64, 0x64, 0x64, 0x64, ...)
-	/home/sunlingyu/6.824/src/shardkv/server.go:388 +0xa2e
-6.824/shardkv.(*ShardKV).pollCtrler(0xc0004c7680, 0x5f5e100)
-	/home/sunlingyu/6.824/src/shardkv/server.go:454 +0x907
-created by 6.824/shardkv.(*ShardKV).applyListener
-	/home/sunlingyu/6.824/src/shardkv/server.go:190 +0x1582
-exit status 2
-FAIL	6.824/shardkv	21.555s
+signal: interrupt
+FAIL	6.824/shardkv	7.655s

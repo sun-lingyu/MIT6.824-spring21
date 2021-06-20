@@ -287,6 +287,7 @@ func (kv *ShardKV) applyListener() {
 				e := labgob.NewEncoder(w)
 				e.Encode(kv.dupMap)
 				e.Encode(kv.kvMap)
+				e.Encode(kv.currConfigNum)
 				e.Encode(kv.currShards)
 				e.Encode(kv.expectedConfigNum)
 				e.Encode(kv.expectedShards)
@@ -321,12 +322,14 @@ func (kv *ShardKV) readPersist(data []byte) {
 	d := labgob.NewDecoder(r)
 	var dupMap map[int]int64
 	var kvMap map[string]string
+	var currConfigNum int
 	var currShards [shardctrler.NShards]bool
 	var expectedConfigNum int
 	var expectedShards [shardctrler.NShards]bool
 	var expectedConfig shardctrler.Config
 	if d.Decode(&dupMap) != nil ||
 		d.Decode(&kvMap) != nil ||
+		d.Decode(&currConfigNum) != nil ||
 		d.Decode(&currShards) != nil ||
 		d.Decode(&expectedConfigNum) != nil ||
 		d.Decode(&expectedShards) != nil ||
@@ -335,6 +338,7 @@ func (kv *ShardKV) readPersist(data []byte) {
 	} else {
 		kv.dupMap = dupMap
 		kv.kvMap = kvMap
+		kv.currConfigNum = currConfigNum
 		kv.currShards = currShards
 		kv.expectedConfigNum = expectedConfigNum
 		kv.expectedShards = expectedShards
@@ -355,7 +359,7 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 	DPrintf("Migrate: Find %d leader\n", kv.me)
 
 	//check whether we are outdated
-	if args.expectedConfigNum >= kv.expectedConfigNum {
+	if args.ExpectedConfigNum >= kv.expectedConfigNum {
 		//do something
 		reply.Err = ErrNotPrepared
 		fmt.Printf("Migrate: ErrNotPrepared\n")
@@ -388,7 +392,13 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrle
 				srv := kv.make_end(servers[si])
 				args := MigrateArgs{shards, expectedConfigNum}
 				var reply MigrateReply
-				ok := srv.Call("ShardKV.Migrate", &args, &reply)
+				ok := true
+				ok = srv.Call("ShardKV.Migrate", &args, &reply)
+				for ok && (reply.Err == ErrNotPrepared) {
+					time.Sleep(100 * time.Millisecond)
+					reply = MigrateReply{}
+					ok = srv.Call("ShardKV.Migrate", &args, &reply)
+				}
 				if ok && (reply.Err == OK) {
 					for k, v := range reply.KvMap {
 						result[k] = v
@@ -410,26 +420,25 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrle
 //only leader can poll
 func (kv *ShardKV) pollCtrler(duration time.Duration) {
 	for !kv.killed() {
+		kv.mu.Lock()
 
 		//check leadership
-		kv.mu.Lock()
 		_, isLeader := kv.rf.GetState()
 		if !isLeader {
 			kv.mu.Unlock()
 			return
 		}
-		kv.mu.Unlock()
 
 		//query for new configuration
 		newConfig := kv.mck.Query(kv.expectedConfigNum)
 		if newConfig.Num != kv.expectedConfigNum {
 			//get an old config
+			kv.mu.Unlock()
 			time.Sleep(duration)
 			continue
 		}
 
 		//get a new config
-		kv.mu.Lock()
 
 		//parse the config
 		//newshards that need to be fetched from other groups

@@ -50,7 +50,7 @@ type GetReply struct {
 
 type MigrateArgs struct {
 	Shards            []int
-	expectedConfigNum int
+	ExpectedConfigNum int
 }
 type MigrateReply struct {
 	Err   Err
