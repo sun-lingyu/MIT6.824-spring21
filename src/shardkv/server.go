@@ -27,15 +27,17 @@ type Op struct {
 	// Your definitions here.
 	// Field names must start with capital letters,
 	// otherwise RPC will break.
-	Type    string
-	Key     string
-	Value   string
-	Version int64
-	ID      int
-	Leader  int                       //only used for Newleader commands
-	Shards  [shardctrler.NShards]bool //only used for configuration change
-	NewKV   map[string]string         //only used for configuration change
-	Config  shardctrler.Config        //only used for configuration change
+	Type          string
+	Key           string
+	Value         string
+	Version       int64
+	ID            int
+	Leader        int                       //only used for Newleader commands
+	Shards        [shardctrler.NShards]bool //only used for Newconfig commands
+	NewKV         map[string]string         //only used for Newconfig commands
+	Config        shardctrler.Config        //only used for Newconfig commands
+	DisableShards []int                     //only used for Disable commands
+	CurrConfigNum int                       //only used for Disable commands
 }
 
 func cmp(a Op, b Op) bool {
@@ -207,6 +209,17 @@ func (kv *ShardKV) applyListener() {
 				continue
 			}
 
+			if cmd.Type == "Disable" {
+				if cmd.CurrConfigNum < kv.currConfigNum {
+					//should return ErrUpdated
+					goto sendHreply
+				}
+				for _, shard := range cmd.DisableShards {
+					kv.currShards[shard] = false
+				}
+				goto sendHreply
+			}
+
 			if cmd.Type == "Newconfig" {
 				kv.currConfig = cmd.Config
 				kv.currConfigNum++
@@ -266,7 +279,7 @@ func (kv *ShardKV) applyListener() {
 					DPrintf("%d send out of loop\n", kv.me)
 					var hreply handlerReply
 					//check whether responsible for the key
-					if cmd.Type != "Newconfig" && kv.currShards[key2shard(cmd.Key)] == false {
+					if cmd.Type != "Newconfig" && cmd.Type != "Disable" && kv.currShards[key2shard(cmd.Key)] == false {
 						hreply.err = ErrWrongGroup
 					} else {
 						if cmd.Type == "Get" {
@@ -276,6 +289,11 @@ func (kv *ShardKV) applyListener() {
 								hreply.value = elem
 							} else {
 								hreply.err = ErrNoKey
+							}
+						} else if cmd.Type == "Disable" {
+							if cmd.CurrConfigNum < kv.currConfigNum {
+								//should return ErrUpdated
+								hreply.err = ErrUpdated
 							}
 						} else {
 							//Put or Append
@@ -373,9 +391,31 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 		fmt.Printf("Migrate: ErrNotPrepared\n")
 		return
 	}
-	//in same
+	//in same ConfigNum
 	if args.CurrConfigNum == kv.currConfigNum {
 		//TODO: disable some kv
+		newCmd := Op{Type: "Disable", Key: "Disable_invalid", Value: "Disable_invalid", DisableShards: args.Shards, CurrConfigNum: kv.currConfigNum}
+		index, _, _ := kv.rf.Start(newCmd)
+
+		kv.pendingChannels[index] = make(chan handlerReply)
+		kv.pendingMap[index] = newCmd
+		ch := kv.pendingChannels[index]
+
+		kv.mu.Unlock()
+
+		hreply := <-ch
+
+		if hreply.err == ErrWrongLeader {
+			fmt.Printf("ErrWrongLeader in Migrate\n")
+			reply.Err = ErrWrongLeader
+			return
+		}
+		if hreply.err == ErrUpdated {
+			fmt.Printf("ErrUpdated in Migrate\n")
+		}
+		if hreply.err != OK {
+			panic("hreply.err != OK in Migrate")
+		}
 
 	}
 	reply.Err = OK
