@@ -85,12 +85,12 @@ type handlerReply struct { //message between applyListener and RPC Handlers.
 func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 	// Your code here.
 	kv.mu.Lock()
-	defer kv.mu.Unlock()
 	DPrintf("server %d: process Get\n", kv.me)
 
 	isLeader := atomic.LoadInt32(&kv.isLeader)
 	if isLeader == 0 {
 		reply.Err = ErrWrongLeader
+		kv.mu.Unlock()
 		return
 	}
 	DPrintf("Find %d leader\n", kv.me)
@@ -103,7 +103,6 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 	kv.mu.Unlock()
 
 	hreply := <-ch
-	kv.mu.Lock()
 
 	reply.Err = hreply.err
 	reply.Value = hreply.value
@@ -114,12 +113,12 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	// Your code here.
 	kv.mu.Lock()
-	defer kv.mu.Unlock()
 	DPrintf("server %d: process PutAppend\n", kv.me)
 
 	isLeader := atomic.LoadInt32(&kv.isLeader)
 	if isLeader == 0 {
 		reply.Err = ErrWrongLeader
+		kv.mu.Unlock()
 		return
 	}
 	DPrintf("Find %d leader\n", kv.me)
@@ -134,6 +133,7 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	if args.Version <= kv.dupMap[args.ID] {
 		//already processed.
 		reply.Err = OK
+		kv.mu.Unlock()
 		return
 	}
 
@@ -146,7 +146,6 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	kv.mu.Unlock()
 
 	hreply := <-ch
-	kv.mu.Lock()
 
 	reply.Err = hreply.err
 
@@ -371,10 +370,18 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 	DPrintf("Migrate: Find %d leader\n", kv.me)
 
 	//check whether we are outdated
-	if args.ExpectedConfigNum >= kv.expectedConfigNum {
-		//disable some kv
-		//TODO: come up a way to fix this
+
+	//fall behind
+	//tell the other group to wait
+	if args.ExpectedConfigNum > kv.expectedConfigNum {
+		reply.Err = ErrNotPrepared
+		fmt.Printf("Migrate: ErrNotPrepared\n")
 		return
+	}
+	//in same
+	if args.ExpectedConfigNum == kv.expectedConfigNum {
+		//TODO: disable some kv
+
 	}
 	reply.Err = OK
 
@@ -403,7 +410,13 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrle
 				srv := kv.make_end(servers[si])
 				args := MigrateArgs{shards, expectedConfigNum}
 				var reply MigrateReply
-				ok := srv.Call("ShardKV.Migrate", &args, &reply)
+				ok := true
+				ok = srv.Call("ShardKV.Migrate", &args, &reply)
+				for ok && (reply.Err == ErrNotPrepared) {
+					time.Sleep(100 * time.Millisecond)
+					reply = MigrateReply{}
+					ok = srv.Call("ShardKV.Migrate", &args, &reply)
+				}
 				if ok && (reply.Err == OK) {
 					for k, v := range reply.KvMap {
 						result[k] = v
@@ -487,9 +500,22 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 
 		//feed new config to raft
 		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: kv.expectedShards, NewKV: newKV}
-		kv.rf.Start(newCmd)
+		index, _, _ := kv.rf.Start(newCmd)
 
+		kv.pendingChannels[index] = make(chan handlerReply)
+		kv.pendingMap[index] = newCmd //used to save newCmd, for applyListener() to query.
+		ch := kv.pendingChannels[index]
 		kv.mu.Unlock()
+
+		hreply := <-ch
+
+		if hreply.err == ErrWrongLeader {
+			return
+		}
+		if hreply.err != OK {
+			panic("hreply.err != OK in pollctrler")
+		}
+
 		time.Sleep(duration)
 	}
 }
