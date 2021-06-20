@@ -294,9 +294,11 @@ func (kv *ShardKV) applyListener() {
 							if cmd.CurrConfigNum < kv.currConfigNum {
 								//should return ErrUpdated
 								hreply.err = ErrUpdated
+							} else {
+								hreply.err = OK
 							}
 						} else {
-							//Put or Append
+							//Put or Append or Newconfig
 							hreply.err = OK
 						}
 					}
@@ -389,6 +391,7 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 	if args.CurrConfigNum > kv.currConfigNum {
 		reply.Err = ErrNotPrepared
 		fmt.Printf("Migrate: ErrNotPrepared\n")
+		fmt.Printf("%v,%v\n", args.CurrConfigNum, kv.currConfigNum)
 		return
 	}
 	//in same ConfigNum
@@ -412,11 +415,10 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 		}
 		if hreply.err == ErrUpdated {
 			fmt.Printf("ErrUpdated in Migrate\n")
+		} else if hreply.err != OK {
+			fmt.Printf("!!!!!, %v\n", hreply.err)
 		}
-		if hreply.err != OK {
-			panic("hreply.err != OK in Migrate")
-		}
-
+		kv.mu.Lock()
 	}
 	reply.Err = OK
 
@@ -441,29 +443,32 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Co
 	result := make(map[string]string)
 	for gid, shards := range newshards {
 		if servers, ok := currConfig.Groups[gid]; ok {
-			// try each server for the shard.
-			for si := 0; si < len(servers); si++ {
-				srv := kv.make_end(servers[si])
-				args := MigrateArgs{shards, currConfigNum}
-				var reply MigrateReply
-				ok := true
-				ok = srv.Call("ShardKV.Migrate", &args, &reply)
-				for ok && (reply.Err == ErrNotPrepared) {
-					time.Sleep(100 * time.Millisecond)
-					reply = MigrateReply{}
+			got := false
+			for !got {
+				// try each server for the shard.
+				for si := 0; si < len(servers); si++ {
+					srv := kv.make_end(servers[si])
+					args := MigrateArgs{shards, currConfigNum}
+					var reply MigrateReply
+					ok := true
 					ok = srv.Call("ShardKV.Migrate", &args, &reply)
-				}
-				if ok && (reply.Err == OK) {
-					for k, v := range reply.KvMap {
-						result[k] = v
+					for ok && (reply.Err == ErrNotPrepared) {
+						time.Sleep(100 * time.Millisecond)
+						reply = MigrateReply{}
+						ok = srv.Call("ShardKV.Migrate", &args, &reply)
 					}
-				} else if ok && (reply.Err == ErrWrongLeader) {
-					continue
-				} else {
-					fmt.Printf("%v %v\n", ok, reply.Err)
-					panic("Migrate RPC fails.")
+					if ok && (reply.Err == OK) {
+						for k, v := range reply.KvMap {
+							result[k] = v
+						}
+						got = true
+						break
+					} else if ok && (reply.Err == ErrWrongLeader) {
+						continue
+					}
 				}
 			}
+
 		} else {
 			panic("gid not found in currConfig.Groups in function askMissing.")
 		}
@@ -524,9 +529,11 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 		//ask for missing shards synchronously
 		var newKV map[string]string
 		if kv.currConfigNum+1 != 1 {
+			tmpcurrConfig := kv.currConfig
+			tmpcurrConfigNum := kv.currConfigNum
 			kv.mu.Unlock()
 			//not needed if this is the first valid config(i.e. currConfigNum+1==1)
-			newKV = kv.askMissing(newshards, kv.currConfig, kv.currConfigNum)
+			newKV = kv.askMissing(newshards, tmpcurrConfig, tmpcurrConfigNum)
 			kv.mu.Lock()
 		}
 

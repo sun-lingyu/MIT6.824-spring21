@@ -1,7 +1,109 @@
-Test: static shards ...
+Test: servers miss configuration changes...
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
   ... Passed
-Test: join then leave ...
+Test: concurrent puts and configuration changes...
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+5,3
+Migrate: ErrNotPrepared
+5,4
+Migrate: ErrNotPrepared
+5,4
+--- FAIL: TestConcurrent1 (9.69s)
+    test_test.go:22: Get(0): expected:
+        7TeYUnrQWmSxGNuClIa2eO-nNUD0V6eYuJFbOn46zhSF41OgO_F1fThse2LKJumER
+        received:
+        7TeYUnrQWmSxGNuClIa2eO-nNUD0V6eYuJFbOn46zhSF41OgO_F1fThse2LKJumERJumER
+Test: more concurrent puts and configuration changes...
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+6,5
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
   ... Passed
-Test: snapshots, join, and leave ...
+Test: concurrent configuration change and restart...
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+2,1
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+6,5
+Migrate: ErrNotPrepared
+6,5
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+9,8
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+13,12
+Migrate: ErrNotPrepared
+14,12
+Migrate: ErrNotPrepared
+14,13
+Migrate: ErrNotPrepared
+14,13
+Migrate: ErrNotPrepared
+14,13
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+27,26
+Migrate: ErrNotPrepared
+27,26
+Migrate: ErrNotPrepared
+27,26
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+--- FAIL: TestConcurrent3 (24.62s)
+    test_test.go:22: Get(5): expected:
+        LIiaPLNXRRdL_8ub
+        received:
+        LIiiaPLNXRRdL_8ub
+Test: unreliable 1...
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+  ... Passed
+Test: unreliable 2...
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+Migrate: ErrNotPrepared
+6,5
+Migrate: ErrNotPrepared
+6,5
+ErrUpdated in Migrate
+--- FAIL: TestUnreliable2 (9.67s)
+    test_test.go:22: Get(0): expected:
+        E5LwWvZQDhl8QHC9G5hM_E6rGKGBAzSHqM4Q76E2QNZO1q-FF3z-oqu-1g4ayEug0XY5QW13HS3l4QgNgmXpy
+        received:
+        E5LwWvZQDhl8QHC9G5hM_E6rGKGBAzSHqM4Q76E2QNZO1q-FF3z-oquz-oqu-1g4ayEug0XY5QW13HS3l4QgNgmXpy
+Test: unreliable 3...
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+ErrUpdated in Migrate
+info: wrote history visualization to /tmp/082528913.html
+--- FAIL: TestUnreliable3 (10.69s)
+    test_test.go:728: history is not linearizable
+Test: shard deletion (challenge 1) ...
 signal: interrupt
-FAIL	6.824/shardkv	8.369s
+FAIL	6.824/shardkv	116.307s
