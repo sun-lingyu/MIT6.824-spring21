@@ -506,6 +506,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 		hreply := <-ch
 
 		if hreply.err == ErrWrongLeader {
+			fmt.Printf("ErrWrongLeader in pollctrler\n")
 			return
 		}
 		if hreply.err != OK {
