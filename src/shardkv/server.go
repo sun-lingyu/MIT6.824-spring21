@@ -72,6 +72,9 @@ type ShardKV struct {
 	expectedConfigNum int                       //expected next config number
 	expectedShards    [shardctrler.NShards]bool //the **expected** shards this group is currently responsible for. this is different from kv.currShards.
 	expectedConfig    shardctrler.Config        //used for migration
+
+	isLeader         int32
+	isPollCtrlerLive *int32 //used to prevent two pollCtrler running at the same time.
 }
 
 type handlerReply struct { //message between applyListener and RPC Handlers.
@@ -85,8 +88,8 @@ func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
 	defer kv.mu.Unlock()
 	DPrintf("server %d: process Get\n", kv.me)
 
-	_, isLeader := kv.rf.GetState()
-	if !isLeader {
+	isLeader := atomic.LoadInt32(&kv.isLeader)
+	if isLeader == 0 {
 		reply.Err = ErrWrongLeader
 		return
 	}
@@ -114,8 +117,8 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	defer kv.mu.Unlock()
 	DPrintf("server %d: process PutAppend\n", kv.me)
 
-	_, isLeader := kv.rf.GetState()
-	if !isLeader {
+	isLeader := atomic.LoadInt32(&kv.isLeader)
+	if isLeader == 0 {
 		reply.Err = ErrWrongLeader
 		return
 	}
@@ -169,6 +172,11 @@ func (kv *ShardKV) killed() bool {
 
 func (kv *ShardKV) abortLeader() {
 	//we are not leader anymore.
+
+	// kill pollCtrler HERE
+	atomic.StoreInt32(kv.isPollCtrlerLive, 0)
+
+	atomic.StoreInt32(&kv.isLeader, 0)
 	for i, ch := range kv.pendingChannels {
 		DPrintf("%d not leader anymore!\n", kv.me)
 		ch <- handlerReply{ErrWrongLeader, ""}
@@ -190,7 +198,11 @@ func (kv *ShardKV) applyListener() {
 
 			if cmd.Type == "Newleader" {
 				if cmd.Leader == kv.me {
-					go kv.pollCtrler(100 * time.Millisecond)
+					atomic.StoreInt32(&kv.isLeader, 1)
+					atomic.StoreInt32(kv.isPollCtrlerLive, 0)
+					kv.isPollCtrlerLive = new(int32)
+					*kv.isPollCtrlerLive = 1
+					go kv.pollCtrler(100*time.Millisecond, kv.isPollCtrlerLive)
 				} else {
 					kv.abortLeader()
 				}
@@ -351,8 +363,8 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 	defer kv.mu.Unlock()
 	DPrintf("server %d: process Get\n", kv.me)
 
-	_, isLeader := kv.rf.GetState()
-	if !isLeader {
+	isLeader := atomic.LoadInt32(&kv.isLeader)
+	if isLeader == 0 {
 		reply.Err = ErrWrongLeader
 		return
 	}
@@ -360,9 +372,8 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 
 	//check whether we are outdated
 	if args.ExpectedConfigNum >= kv.expectedConfigNum {
-		//do something
-		reply.Err = ErrNotPrepared
-		fmt.Printf("Migrate: ErrNotPrepared\n")
+		//disable some kv
+		//TODO: come up a way to fix this
 		return
 	}
 	reply.Err = OK
@@ -392,13 +403,7 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrle
 				srv := kv.make_end(servers[si])
 				args := MigrateArgs{shards, expectedConfigNum}
 				var reply MigrateReply
-				ok := true
-				ok = srv.Call("ShardKV.Migrate", &args, &reply)
-				for ok && (reply.Err == ErrNotPrepared) {
-					time.Sleep(100 * time.Millisecond)
-					reply = MigrateReply{}
-					ok = srv.Call("ShardKV.Migrate", &args, &reply)
-				}
+				ok := srv.Call("ShardKV.Migrate", &args, &reply)
 				if ok && (reply.Err == OK) {
 					for k, v := range reply.KvMap {
 						result[k] = v
@@ -406,7 +411,7 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrle
 				} else if ok && (reply.Err == ErrWrongLeader) {
 					continue
 				} else {
-					fmt.Printf("%v\n", ok)
+					fmt.Printf("%v %v\n", ok, reply.Err)
 					panic("Migrate RPC fails.")
 				}
 			}
@@ -418,17 +423,16 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, expectedConfig shardctrle
 }
 
 //only leader can poll
-func (kv *ShardKV) pollCtrler(duration time.Duration) {
+func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 	for !kv.killed() {
-		kv.mu.Lock()
 
-		//check leadership
-		_, isLeader := kv.rf.GetState()
-		if !isLeader {
-			kv.mu.Unlock()
+		//check liveness
+
+		if atomic.LoadInt32(islive) == 0 {
 			return
 		}
 
+		kv.mu.Lock()
 		//query for new configuration
 		newConfig := kv.mck.Query(kv.expectedConfigNum)
 		if newConfig.Num != kv.expectedConfigNum {
@@ -550,6 +554,10 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 	kv.readPersist(persister.ReadSnapshot())
 
 	kv.mck = shardctrler.MakeClerk(kv.ctrlers)
+
+	kv.isLeader = 0
+	kv.isPollCtrlerLive = new(int32)
+	*kv.isPollCtrlerLive = 0
 
 	go kv.applyListener()
 
