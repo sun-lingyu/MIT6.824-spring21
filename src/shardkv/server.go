@@ -35,6 +35,7 @@ type Op struct {
 	Leader        int                       //only used for Newleader commands
 	Shards        [shardctrler.NShards]bool //only used for Newconfig commands
 	NewKV         map[string]string         //only used for Newconfig commands
+	NewDupMap     map[int]int64             //only used for Newconfig commands
 	Config        shardctrler.Config        //only used for Newconfig commands
 	DisableShards []int                     //only used for Disable commands
 	CurrConfigNum int                       //only used for Disable commands
@@ -196,6 +197,7 @@ func (kv *ShardKV) applyListener() {
 			cmd := msg.Command.(Op)
 
 			if cmd.Type == "Newleader" {
+				fmt.Printf("New leader\n")
 				if cmd.Leader == kv.me {
 					atomic.StoreInt32(&kv.isLeader, 1)
 					atomic.StoreInt32(kv.isPollCtrlerLive, 0)
@@ -228,6 +230,13 @@ func (kv *ShardKV) applyListener() {
 					kv.kvMap[k] = v
 				}
 
+				for id, version := range cmd.NewDupMap {
+					_, ok := kv.dupMap[id]
+					if !ok || kv.dupMap[id] < version {
+						kv.dupMap[id] = version
+					}
+				}
+
 				goto sendHreply
 
 				//kv.mu.Unlock()
@@ -249,6 +258,7 @@ func (kv *ShardKV) applyListener() {
 				}
 				//check whether responsible for the key
 				if kv.currShards[key2shard(cmd.Key)] == false {
+					//fmt.Printf("key,value: %v,%v\n", cmd.Key, cmd.Value)
 					goto sendHreply
 				}
 				//not a duplicate one
@@ -260,6 +270,7 @@ func (kv *ShardKV) applyListener() {
 				//apply changes
 				switch cmd.Type {
 				case "Append":
+					//fmt.Printf("config: %v, gid: %v, server %v, %v,%v Appended, dupmap updated to %v\n", kv.currConfigNum, kv.gid, kv.me, cmd.Key, cmd.Value, kv.dupMap[cmd.ID])
 					kv.kvMap[cmd.Key] = kv.kvMap[cmd.Key] + cmd.Value
 				case "Put":
 					kv.kvMap[cmd.Key] = cmd.Value
@@ -274,12 +285,16 @@ func (kv *ShardKV) applyListener() {
 
 			if hasKey {
 				if cmp(cmd, oldCmd) == false {
+					/*if cmd.Type == "Append" {
+						fmt.Printf("%v,%v returned ErrWrongLeader1\n", cmd.Key, cmd.Value)
+					}*/
 					kv.abortLeader()
 				} else {
 					DPrintf("%d send out of loop\n", kv.me)
 					var hreply handlerReply
 					//check whether responsible for the key
 					if cmd.Type != "Newconfig" && cmd.Type != "Disable" && kv.currShards[key2shard(cmd.Key)] == false {
+						//fmt.Printf("ErrWrongGroup\n")
 						hreply.err = ErrWrongGroup
 					} else {
 						if cmd.Type == "Get" {
@@ -299,6 +314,9 @@ func (kv *ShardKV) applyListener() {
 							}
 						} else {
 							//Put or Append or Newconfig
+							/*if cmd.Type == "Append" {
+								fmt.Printf("%v,%v returned OK\n", cmd.Key, cmd.Value)
+							}*/
 							hreply.err = OK
 						}
 					}
@@ -310,6 +328,9 @@ func (kv *ShardKV) applyListener() {
 				}
 				DPrintf("%d sending finish\n", kv.me)
 			} else { //must exist another leader.
+				/*if cmd.Type == "Append" {
+					fmt.Printf("%v,%v returned ErrWrongLeader2\n", cmd.Key, cmd.Value)
+				}*/
 				kv.abortLeader()
 			}
 
@@ -435,12 +456,22 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 		}
 	}
 
+	//follow Lab hint: include a copy of kv state in RPC reply to avoid race
+	dupMapCopy := make(map[int]int64, len(kv.dupMap))
+	for id, version := range kv.dupMap {
+		dupMapCopy[id] = version
+	}
+
+	reply.NewDupMap = dupMapCopy
+
 	return
 }
 
-func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Config, currConfigNum int) map[string]string {
+func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Config, currConfigNum int) (map[string]string, map[int]int64) {
 	//not holding the lock
-	result := make(map[string]string)
+	newKV := make(map[string]string)
+	newDupMap := make(map[int]int64)
+
 	for gid, shards := range newshards {
 		if servers, ok := currConfig.Groups[gid]; ok {
 			got := false
@@ -459,7 +490,13 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Co
 					}
 					if ok && (reply.Err == OK) {
 						for k, v := range reply.KvMap {
-							result[k] = v
+							newKV[k] = v
+						}
+						for id, version := range reply.NewDupMap {
+							_, ok := newDupMap[id]
+							if !ok || newDupMap[id] < version {
+								newDupMap[id] = version
+							}
 						}
 						got = true
 						break
@@ -473,7 +510,7 @@ func (kv *ShardKV) askMissing(newshards map[int][]int, currConfig shardctrler.Co
 			panic("gid not found in currConfig.Groups in function askMissing.")
 		}
 	}
-	return result
+	return newKV, newDupMap
 }
 
 //only leader can poll
@@ -528,12 +565,13 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 
 		//ask for missing shards synchronously
 		var newKV map[string]string
+		var newDupMap map[int]int64
 		if kv.currConfigNum+1 != 1 {
 			tmpcurrConfig := kv.currConfig
 			tmpcurrConfigNum := kv.currConfigNum
 			kv.mu.Unlock()
 			//not needed if this is the first valid config(i.e. currConfigNum+1==1)
-			newKV = kv.askMissing(newshards, tmpcurrConfig, tmpcurrConfigNum)
+			newKV, newDupMap = kv.askMissing(newshards, tmpcurrConfig, tmpcurrConfigNum)
 			kv.mu.Lock()
 		}
 
@@ -542,7 +580,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 		//but it is built on this, and we are not required to do so.
 
 		//feed new config to raft
-		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: expectedShards, NewKV: newKV, Config: newConfig}
+		newCmd := Op{Type: "Newconfig", Key: "Newconfig_invalid", Value: "Newconfig_invalid", Shards: expectedShards, NewKV: newKV, NewDupMap: newDupMap, Config: newConfig}
 		index, _, _ := kv.rf.Start(newCmd)
 
 		kv.pendingChannels[index] = make(chan handlerReply)

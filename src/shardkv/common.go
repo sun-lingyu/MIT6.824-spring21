@@ -54,6 +54,7 @@ type MigrateArgs struct {
 	CurrConfigNum int
 }
 type MigrateReply struct {
-	Err   Err
-	KvMap map[string]string
+	Err       Err
+	KvMap     map[string]string
+	NewDupMap map[int]int64
 }
