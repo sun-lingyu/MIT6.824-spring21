@@ -10,7 +10,6 @@ package shardkv
 
 import (
 	"crypto/rand"
-	"fmt"
 	"math/big"
 	"time"
 
@@ -139,9 +138,6 @@ func (ck *Clerk) PutAppend(key string, value string, op string) {
 					break
 				}
 				// ... not ok, or ErrWrongLeader
-				if ok == false {
-					fmt.Printf("%v,%v RPC get false\n", args.Key, args.Value)
-				}
 			}
 		}
 		time.Sleep(100 * time.Millisecond)

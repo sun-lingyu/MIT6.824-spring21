@@ -23,7 +23,6 @@ func check(t *testing.T, ck *Clerk, key string, value string) {
 	}
 }
 
-/*
 //
 // test static 2-way sharding, without shard movement.
 //
@@ -301,7 +300,7 @@ func TestMissChange(t *testing.T) {
 	}
 
 	fmt.Printf("  ... Passed\n")
-}*/
+}
 
 func TestConcurrent1(t *testing.T) {
 	fmt.Printf("Test: concurrent puts and configuration changes...\n")
@@ -347,14 +346,11 @@ func TestConcurrent1(t *testing.T) {
 	time.Sleep(500 * time.Millisecond)
 	cfg.leave(0)
 
-	fmt.Printf("-------------------------------------------\n")
-
 	cfg.ShutdownGroup(0)
 	time.Sleep(100 * time.Millisecond)
 	cfg.ShutdownGroup(1)
 	time.Sleep(100 * time.Millisecond)
 	cfg.ShutdownGroup(2)
-	fmt.Printf("-------------------------------------------shut down\n")
 
 	cfg.leave(2)
 
@@ -375,8 +371,6 @@ func TestConcurrent1(t *testing.T) {
 	for i := 0; i < n; i++ {
 		<-ch
 	}
-
-	fmt.Printf("++++++++++++++++++++++++++++++++++++++++++++\n")
 
 	for i := 0; i < n; i++ {
 		check(t, ck, ka[i], va[i])

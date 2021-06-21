@@ -197,7 +197,7 @@ func (kv *ShardKV) applyListener() {
 			cmd := msg.Command.(Op)
 
 			if cmd.Type == "Newleader" {
-				fmt.Printf("New leader\n")
+				//fmt.Printf("New leader\n")
 				if cmd.Leader == kv.me {
 					atomic.StoreInt32(&kv.isLeader, 1)
 					atomic.StoreInt32(kv.isPollCtrlerLive, 0)
@@ -411,8 +411,8 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 	//tell the other group to wait
 	if args.CurrConfigNum > kv.currConfigNum {
 		reply.Err = ErrNotPrepared
-		fmt.Printf("Migrate: ErrNotPrepared\n")
-		fmt.Printf("%v,%v\n", args.CurrConfigNum, kv.currConfigNum)
+		//fmt.Printf("Migrate: ErrNotPrepared\n")
+		//fmt.Printf("%v,%v\n", args.CurrConfigNum, kv.currConfigNum)
 		return
 	}
 	//in same ConfigNum
@@ -430,12 +430,12 @@ func (kv *ShardKV) Migrate(args *MigrateArgs, reply *MigrateReply) {
 		hreply := <-ch
 
 		if hreply.err == ErrWrongLeader {
-			fmt.Printf("ErrWrongLeader in Migrate\n")
+			//fmt.Printf("ErrWrongLeader in Migrate\n")
 			reply.Err = ErrWrongLeader
 			return
 		}
 		if hreply.err == ErrUpdated {
-			fmt.Printf("ErrUpdated in Migrate\n")
+			//fmt.Printf("ErrUpdated in Migrate\n")
 		} else if hreply.err != OK {
 			fmt.Printf("!!!!!, %v\n", hreply.err)
 		}
@@ -591,7 +591,7 @@ func (kv *ShardKV) pollCtrler(duration time.Duration, islive *int32) {
 		hreply := <-ch
 
 		if hreply.err == ErrWrongLeader {
-			fmt.Printf("ErrWrongLeader in pollctrler\n")
+			//fmt.Printf("ErrWrongLeader in pollctrler\n")
 			return
 		}
 		if hreply.err != OK {
